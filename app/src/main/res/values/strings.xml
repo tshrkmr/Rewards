@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Rewards</string>
+    <string name="list_seperator">List Seperator</string>
+    <string name="employee_image">Employee Image</string>
+    <string name="saveitem">saveItem</string>
+    <string name="rewardsimage">rewardsImage</string>
+    <string name="logoimage">logoImage</string>
+    <string name="login">LOGIN</string>
+    <string name="tap_here_to_create_a_profile">Tap here to create a profile</string>
+    <string name="remember_my_credentials">Remember my credentials</string>
+    <string name="tap_to_clear_saved_api">Tap to clear saved API</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="student_email_edu">Student Email (.edu)</string>
+    <string name="student_id_number">Student Id Number</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="select_username">Select Username</string>
+    <string name="position_title">Position Title</string>
+    <string name="department_name">Department Name</string>
+    <string name="select_password">Select Password</string>
+    <string name="your_story">Your Story:</string>
+    <string name="tell_us_something_about_yourself">Tell us Something about yourself</string>
+    <string name="profile_picture">Profile Picture</string>
+</resources>
