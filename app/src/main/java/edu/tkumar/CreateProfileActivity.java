@@ -8,12 +8,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +39,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     private final int REQUEST_IMAGE_GALLERY = 1;
     private String locationValue = "", apiValue = "";
     private String imageBytes = "";
+    private static final String TAG = "CreateProfileActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,22 +110,9 @@ public class CreateProfileActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Profile Picture");
         builder.setMessage("Take picture from:");
-        builder.setPositiveButton("CAMERA", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                doThumb(v);
-            }
-        });
-        builder.setNegativeButton("GALLERY", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                doGallery(v);
-            }
-        });
-        builder.setNeutralButton("CANCEL", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
+        builder.setPositiveButton("CAMERA", (dialog, which) -> doThumb(v));
+        builder.setNegativeButton("GALLERY", (dialog, which) -> doGallery(v));
+        builder.setNeutralButton("CANCEL", (dialog, which) -> {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -161,6 +151,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     private void processCameraThumb(Bundle extras) {
         Bitmap imageBitmap = (Bitmap) extras.get("data");
         imageButton.setImageBitmap(imageBitmap);
+        imageToBase64();
     }
 
     private void processGallery(Intent data) {
@@ -177,6 +168,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
         imageButton.setImageBitmap(selectedImage);
+        imageToBase64();
     }
 
     @Override
@@ -189,22 +181,41 @@ public class CreateProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemID = item.getItemId();
         if(itemID == R.id.save_menu){
-            userName = createUsername.getText().toString();
-            password = createPassword.getText().toString();
-            firstName = createFirstName.getText().toString();
-            lastName = createLastName.getText().toString();
-            departmentName = createDepartmentName.getText().toString();
-            positionTitle = createPositionTitle.getText().toString();
-            story = createStory.getText().toString();
+            getFieldData();
+
             if( userName.trim().isEmpty() || password.trim().isEmpty() || firstName.trim().isEmpty() || lastName.trim().isEmpty()
                     || departmentName.trim().isEmpty() || positionTitle.trim().isEmpty() || story.trim().isEmpty()){
                 profileDataIncorrect(empty);
             }else {
                 CreateProfileAPIRunnable createProfileAPIRunnable = new CreateProfileAPIRunnable(this, firstName,
                         lastName, userName, departmentName, story, positionTitle, password,"1000", locationValue, imageBytes);
+                new Thread(createProfileAPIRunnable).start();
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getFieldData(){
+        userName = createUsername.getText().toString();
+        password = createPassword.getText().toString();
+        firstName = createFirstName.getText().toString();
+        lastName = createLastName.getText().toString();
+        departmentName = createDepartmentName.getText().toString();
+        positionTitle = createPositionTitle.getText().toString();
+        story = createStory.getText().toString();
+    }
+
+    private void imageToBase64(){
+        BitmapDrawable drawable = (BitmapDrawable) imageButton.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+        ImageToText imageToText = new ImageToText(bitmap, this);
+        new Thread(imageToText).start();
+
+    }
+
+    public void setImageBytes(String bytes){
+        imageBytes = bytes;
+        Log.d(TAG, "onOptionsItemSelected: " + imageBytes);
     }
 
     private void profileDataIncorrect(String issue){
@@ -217,10 +228,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 //            builder.setTitle("One or More Fields Incorrect");
 //            builder.setMessage("Null values cannot be accepted");
 //        }
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
+        builder.setPositiveButton("OK", (dialog, which) -> {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
