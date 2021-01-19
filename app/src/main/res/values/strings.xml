@@ -22,4 +22,7 @@
     <string name="your_story">Your Story:</string>
     <string name="tell_us_something_about_yourself">Tell us Something about yourself</string>
     <string name="profile_picture">Profile Picture</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="show_leaderboard">Show Leaderboard</string>
 </resources>

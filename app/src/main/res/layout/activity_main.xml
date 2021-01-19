@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:onClick="clearSavedApi"
     tools:context=".MainActivity">
 
     <ImageView
@@ -113,7 +112,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
-        android:onClick="clearSavedApi"
         android:text="@string/tap_to_clear_saved_api"
         android:textAlignment="center"
         android:textColor="@color/darkTextOrange"

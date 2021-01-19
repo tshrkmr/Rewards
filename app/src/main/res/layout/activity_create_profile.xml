@@ -145,7 +145,7 @@
             android:background="@color/textBoxBackground"
             android:ems="10"
             android:hint="@string/select_password"
-            android:inputType="textPassword"
+            android:inputType="textVisiblePassword|textPassword"
             android:maxLength="40"
             android:textAlignment="viewStart"
             android:textColorHint="@color/textOrange"

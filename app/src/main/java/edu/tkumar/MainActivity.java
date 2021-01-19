@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         if(myAPI == ("noAPI")) {
             createApiNeededDialog();
         }
+        Log.d(TAG, "checkSharedPreferences: " + myAPI);
     }
 
     private void createApiNeededDialog(){
@@ -242,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Intent intent = new Intent(this, CreateProfileActivity.class);
-        intent.putExtra("location", location);
+        intent.putExtra("location", "Chicago, IL");
         intent.putExtra("apiValue", myAPI);
         startActivity(intent);
     }

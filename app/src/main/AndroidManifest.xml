@@ -2,15 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.tkumar">
 
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <queries>
         <intent>
-            <action android:name="android.media.action.IMAGE_CAPTURE"/>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
         </intent>
     </queries>
 
@@ -22,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Rewards"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CreateProfileActivity"></activity>
+        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".CreateProfileActivity" />
         <activity android:name=".RewardActivity" />
         <activity android:name=".LeaderboardActivity" />
         <activity android:name=".EditProfileActivity" />

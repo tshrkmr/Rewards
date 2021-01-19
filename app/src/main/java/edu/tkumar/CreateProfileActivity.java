@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,7 +14,6 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +29,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     private EditText createStory, createUsername, createPassword, createFirstName, createLastName, createDepartmentName, createPositionTitle;
     private String story, userName, password, firstName, lastName, departmentName, positionTitle;
-    private String empty = "empty";
+    private final String empty = "empty";
     private TextView textSizeDisplay;
     private ImageButton imageButton;
     private static final int MAX_LEN = 360;
@@ -173,7 +171,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.save_menu, menu);
+        getMenuInflater().inflate(R.menu.create_profile_menu, menu);
         return true;
     }
 
@@ -188,7 +186,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                 profileDataIncorrect(empty);
             }else {
                 CreateProfileAPIRunnable createProfileAPIRunnable = new CreateProfileAPIRunnable(this, firstName,
-                        lastName, userName, departmentName, story, positionTitle, password,"1000", locationValue, imageBytes);
+                        lastName, userName, departmentName, story, positionTitle, password,"1000", locationValue, imageBytes, apiValue);
                 new Thread(createProfileAPIRunnable).start();
             }
         }
@@ -208,15 +206,14 @@ public class CreateProfileActivity extends AppCompatActivity {
     private void imageToBase64(){
         BitmapDrawable drawable = (BitmapDrawable) imageButton.getDrawable();
         Bitmap bitmap = drawable.getBitmap();
-        ImageToText imageToText = new ImageToText(bitmap, this);
-        new Thread(imageToText).start();
-
+        ImageToText imageToText = new ImageToText(bitmap);
+        imageBytes = imageToText.toBase64();
     }
 
-    public void setImageBytes(String bytes){
-        imageBytes = bytes;
-        Log.d(TAG, "onOptionsItemSelected: " + imageBytes);
-    }
+//    public void setImageBytes(String bytes){
+//        imageBytes = bytes;
+//        Log.d(TAG, "onOptionsItemSelected: " + imageBytes);
+//    }
 
     private void profileDataIncorrect(String issue){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

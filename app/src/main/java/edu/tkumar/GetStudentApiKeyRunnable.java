@@ -43,7 +43,7 @@ public class GetStudentApiKeyRunnable implements  Runnable{
         buildURL.appendQueryParameter("studentId", studentID);
         buildURL.appendQueryParameter("email", emailID);
         String urlToUse = buildURL.build().toString();
-        Log.d(TAG, "run: " + urlToUse);
+        //Log.d(TAG, "run: " + urlToUse);
 
         StringBuilder result = new StringBuilder();
 
@@ -77,8 +77,7 @@ public class GetStudentApiKeyRunnable implements  Runnable{
                     result.append(line).append("\n");
                 }
             }
-            Log.d(TAG, "run: " + result.toString());
-            //mainActivity.showResults(result.toString());
+            //Log.d(TAG, "run: " + result.toString());
          } catch (Exception e) {
             e.printStackTrace();
             Log.d(TAG, "run: error");
