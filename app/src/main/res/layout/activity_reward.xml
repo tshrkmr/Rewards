@@ -14,7 +14,7 @@ android:orientation="vertical"
 app:layout_constraintGuide_percent="0.40" />
 
 <ImageButton
-android:id="@+id/profileImageButton"
+android:id="@+id/createProfileImageButton"
 android:layout_width="154dp"
 android:layout_height="228dp"
 android:layout_marginStart="16dp"
@@ -26,7 +26,7 @@ app:layout_constraintTop_toTopOf="parent"
 app:srcCompat="@drawable/default_photo" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/mainPasswordEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -36,7 +36,7 @@ app:srcCompat="@drawable/default_photo" />
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName3"
+        android:id="@+id/createLastName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -48,7 +48,7 @@ app:srcCompat="@drawable/default_photo" />
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName5"
+        android:id="@+id/createPositionTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -60,7 +60,7 @@ app:srcCompat="@drawable/default_photo" />
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <EditText
-        android:id="@+id/storyEdittext"
+        android:id="@+id/createStoryEdittext"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -69,7 +69,7 @@ app:srcCompat="@drawable/default_photo" />
         android:gravity="start|top"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName5"
+        app:layout_constraintEnd_toEndOf="@+id/createPositionTitle"
         app:layout_constraintStart_toStartOf="@+id/textView11"
         app:layout_constraintTop_toBottomOf="@+id/textView11" />
 
@@ -82,7 +82,7 @@ app:srcCompat="@drawable/default_photo" />
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toTopOf="@+id/profileImageButton" />
+        app:layout_constraintTop_toTopOf="@+id/createProfileImageButton" />
 
     <TextView
         android:id="@+id/textView6"
@@ -90,9 +90,9 @@ app:srcCompat="@drawable/default_photo" />
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPassword"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPassword"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintEnd_toEndOf="@+id/mainPasswordEditText"
+        app:layout_constraintStart_toStartOf="@+id/mainPasswordEditText"
+        app:layout_constraintTop_toBottomOf="@+id/mainPasswordEditText" />
 
     <TextView
         android:id="@+id/textView7"
@@ -100,9 +100,9 @@ app:srcCompat="@drawable/default_photo" />
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName3"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName3"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3" />
+        app:layout_constraintEnd_toEndOf="@+id/createLastName"
+        app:layout_constraintStart_toStartOf="@+id/createLastName"
+        app:layout_constraintTop_toBottomOf="@+id/createLastName" />
 
     <TextView
         android:id="@+id/textView8"
@@ -110,9 +110,9 @@ app:srcCompat="@drawable/default_photo" />
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/profileImageButton"
-        app:layout_constraintStart_toStartOf="@+id/profileImageButton"
-        app:layout_constraintTop_toBottomOf="@+id/profileImageButton" />
+        app:layout_constraintEnd_toEndOf="@+id/createProfileImageButton"
+        app:layout_constraintStart_toStartOf="@+id/createProfileImageButton"
+        app:layout_constraintTop_toBottomOf="@+id/createProfileImageButton" />
 
     <TextView
         android:id="@+id/textView9"
@@ -120,8 +120,8 @@ app:srcCompat="@drawable/default_photo" />
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName5"
-        app:layout_constraintStart_toStartOf="@+id/profileImageButton"
+        app:layout_constraintEnd_toEndOf="@+id/createPositionTitle"
+        app:layout_constraintStart_toStartOf="@+id/createProfileImageButton"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <TextView
@@ -130,7 +130,7 @@ app:srcCompat="@drawable/default_photo" />
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="TextView"
-        app:layout_constraintEnd_toStartOf="@+id/editTextTextPersonName5"
+        app:layout_constraintEnd_toStartOf="@+id/createPositionTitle"
         app:layout_constraintStart_toStartOf="@+id/textView9"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 

@@ -14,7 +14,7 @@
         app:layout_constraintGuide_percent="0.40" />
 
     <ImageButton
-        android:id="@+id/profileImageButton"
+        android:id="@+id/createProfileImageButton"
         android:layout_width="154dp"
         android:layout_height="228dp"
         android:layout_marginStart="16dp"
@@ -26,7 +26,7 @@
         app:srcCompat="@drawable/default_photo" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/createUsernameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -36,18 +36,18 @@
         android:text="Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toTopOf="@+id/profileImageButton" />
+        app:layout_constraintTop_toTopOf="@+id/createProfileImageButton" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/mainPasswordEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+        app:layout_constraintEnd_toEndOf="@+id/createUsernameEditText"
+        app:layout_constraintStart_toStartOf="@+id/createUsernameEditText"
+        app:layout_constraintTop_toBottomOf="@+id/createUsernameEditText" />
 
     <EditText
         android:id="@+id/editTextTextPersonName2"
@@ -57,48 +57,48 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
+        app:layout_constraintEnd_toEndOf="@+id/createUsernameEditText"
+        app:layout_constraintStart_toStartOf="@+id/createUsernameEditText"
+        app:layout_constraintTop_toBottomOf="@+id/mainPasswordEditText" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName3"
+        android:id="@+id/createLastName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/createUsernameEditText"
+        app:layout_constraintStart_toStartOf="@+id/createUsernameEditText"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName4"
+        android:id="@+id/createDepartmentName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
-        app:layout_constraintStart_toStartOf="@+id/profileImageButton"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3" />
+        app:layout_constraintEnd_toEndOf="@+id/createUsernameEditText"
+        app:layout_constraintStart_toStartOf="@+id/createProfileImageButton"
+        app:layout_constraintTop_toBottomOf="@+id/createLastName" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName5"
+        android:id="@+id/createPositionTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName4"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName4"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName4" />
+        app:layout_constraintEnd_toEndOf="@+id/createDepartmentName"
+        app:layout_constraintStart_toStartOf="@+id/createDepartmentName"
+        app:layout_constraintTop_toBottomOf="@+id/createDepartmentName" />
 
     <TextView
-        android:id="@+id/storyTextview"
+        android:id="@+id/createStoryTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -106,11 +106,11 @@
         android:layout_marginEnd="8dp"
         android:text="TextView"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName5"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName5" />
+        app:layout_constraintStart_toStartOf="@+id/createPositionTitle"
+        app:layout_constraintTop_toBottomOf="@+id/createPositionTitle" />
 
     <EditText
-        android:id="@+id/storyEdittext"
+        android:id="@+id/createStoryEdittext"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -119,7 +119,7 @@
         android:gravity="start|top"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName5"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName5"
-        app:layout_constraintTop_toBottomOf="@+id/storyTextview" />
+        app:layout_constraintEnd_toEndOf="@+id/createPositionTitle"
+        app:layout_constraintStart_toStartOf="@+id/createPositionTitle"
+        app:layout_constraintTop_toBottomOf="@+id/createStoryTextview" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,10 +18,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 public class GetStudentApiKeyRunnable implements  Runnable{
 
     private final MainActivity mainActivity;
-    private final String firstName;
-    private final String lastName;
-    private final String emailID;
-    private final String studentID;
+    private final String firstName, lastName, emailID, studentID;
     private static final String base_url = "http://christopherhield.org/api/Profile/GetStudentApiKey";
     private static final String TAG = "GetStudentApiKeyRunnable";
 

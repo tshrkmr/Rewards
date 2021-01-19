@@ -2,25 +2,45 @@ package edu.tkumar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private SharedPreferences sharedPreferences;
     private EditText firstName, lastName, emailID, studentID;
-    private String fName, lName, eID, sID;
-
+    private String fName, lName, eID, sID, location;
+    private LocationManager locationManager;
+    private Criteria criteria;
+    private static final int MY_LOCATION_REQUEST_CODE_ID = 111;
+    private Location currentLocation = null;
+    private final String apiValueNull = "apiValueNull", empty = "empty", incorrectEmail = "incorrectEmail", nullValue = "nullValue";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +48,68 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkSharedPreferences();
+        findLocation();
+    }
+
+    private void findLocation(){
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        criteria = new Criteria();
+
+        // use gps for location
+        criteria.setPowerRequirement(Criteria.POWER_HIGH);
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+
+        // use network for location
+        //criteria.setPowerRequirement(Criteria.POWER_LOW);
+        //criteria.setAccuracy(Criteria.ACCURACY_MEDIUM);
+
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setSpeedRequired(false);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    MY_LOCATION_REQUEST_CODE_ID);
+        } else {
+            setLocation();
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void setLocation() {
+
+        String bestProvider = locationManager.getBestProvider(criteria, true);
+
+        if (bestProvider != null) {
+            currentLocation = locationManager.getLastKnownLocation(bestProvider);
+        }
+        if (currentLocation != null) {
+            findCitySate(currentLocation.getLatitude(), currentLocation.getLongitude());
+            Log.d(TAG, "setLocation: " + currentLocation.getLatitude() + " " + currentLocation.getLongitude());
+        } else {
+            Log.d(TAG, "setLocation: " + "No Location");
+        }
+    }
+
+    public void findCitySate(double latitude, double longitude){
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            location = city.concat(", ").concat(state);
+            //Log.d(TAG, "findPostalCode: " + postalCode + "  " + city);
+            Toast.makeText(MainActivity.this, location ,Toast.LENGTH_LONG ).show();
+
+        }catch (IOException e){
+            Log.d(TAG, "findPostalCode: " + " address not found");
+        }
     }
 
     private void checkSharedPreferences(){
@@ -59,10 +141,12 @@ public class MainActivity extends AppCompatActivity {
                 lName = lastName.getText().toString();
                 eID = emailID.getText().toString();
                 sID = studentID.getText().toString();
-                if(fName.isEmpty() || lName.isEmpty() || eID.isEmpty() || sID.isEmpty()){
-                    apiDataIncorrect("empty");
-                }else if(!eID.trim().matches(emailPattern)){
-                    apiDataIncorrect("emailID");
+                if(fName.trim().isEmpty() || lName.trim().isEmpty() || eID.trim().isEmpty() || sID.trim().isEmpty()){
+                    apiDataIncorrect(empty);
+                }else if(fName == null || lName == null || eID == null || sID == null){
+                    apiDataIncorrect(nullValue);
+                } else if(!eID.trim().matches(emailPattern)){
+                    apiDataIncorrect(incorrectEmail);
                 }else{
                     getApiKey(fName, lName, eID, sID);
                 }
@@ -80,14 +164,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void apiDataIncorrect(String issue){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        if(issue.equals("empty")) {
+        if(issue.equals(empty)) {
             builder.setTitle("One or More Fields not Entered");
             builder.setMessage("Please enter data in all the fields");
-        }else {
-        builder.setTitle("Incorrect Email");
-        builder.setMessage("Only .edu emails can be accepted");
+        }else if(issue.equals(incorrectEmail)){
+            builder.setTitle("Incorrect Email");
+            builder.setMessage("Only .edu emails can be accepted");
+        }else if(issue.equals(apiValueNull)){
+            builder.setTitle("API could not be retrieved");
+            builder.setMessage("Please try again later");
+        }else if(issue.equals(nullValue)) {
+            builder.setTitle("One or More Fields Incorrect");
+            builder.setMessage("Null values cannot be accepted");
         }
-
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -104,13 +193,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void saveApiKey(String api){
-        SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
-        prefsEditor.putString("apiValue", api);
-        prefsEditor.apply();
         if(api!=null){
+            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+            prefsEditor.putString("apiValue", api);
+            prefsEditor.apply();
             createApiStoredDialog(api);
-        }else
-            createApiStoredDialog("API could not be retrieved");
+        }else {
+            apiDataIncorrect(apiValueNull);
+        }
+
     }
 
     public void createApiStoredDialog(String api){
@@ -151,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Intent intent = new Intent(this, CreateProfileActivity.class);
+        intent.putExtra("location", location);
+        intent.putExtra("apiValue", myAPI);
         startActivity(intent);
     }
 }
