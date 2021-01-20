@@ -20,7 +20,7 @@ public class CreateProfileAPIRunnable implements Runnable{
     private CreateProfileActivity createProfileActivity;
     private final String firstName, lastName, userName, department, story, position, password, remainingPointsToAward, location, imageBytes, apiValue;
     private static final String base_url = "http://christopherhield.org/api/Profile/CreateProfile";
-    private static final String TAG = "CreateProfileAPIRunnabl";
+    private static final String TAG = "CreateProfileAPIRunnable";
 
     public CreateProfileAPIRunnable(CreateProfileActivity createProfileActivity, String firstName, String lastName,
                                     String userName, String department, String story, String position, String password,
@@ -44,7 +44,7 @@ public class CreateProfileAPIRunnable implements Runnable{
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("Profile Image", imageBytes);
+            jsonObject.put("Profile image", imageBytes);
         } catch (Exception e) {
             e.printStackTrace();
             return;

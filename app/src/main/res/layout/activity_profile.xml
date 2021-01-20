@@ -8,7 +8,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/activityBackground">
 
         <TextView
             android:id="@+id/profileNameTextview"
@@ -16,6 +17,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:background="@color/activityBackground"
+            android:textAlignment="viewStart"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,12 +28,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:background="@color/activityBackground"
+            android:textAlignment="viewStart"
+            android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="@+id/profileNameTextview"
             app:layout_constraintStart_toStartOf="@+id/profileNameTextview"
             app:layout_constraintTop_toBottomOf="@+id/profileNameTextview" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/profileImageview"
             android:layout_width="155dp"
             android:layout_height="236dp"
             android:layout_marginTop="16dp"
@@ -43,15 +50,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:background="@color/activityBackground"
+            android:text="@string/points_awarded"
             app:layout_constraintEnd_toEndOf="@+id/profileUsernameTextview"
-            app:layout_constraintStart_toEndOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3" />
+            app:layout_constraintStart_toEndOf="@+id/profileImageview"
+            app:layout_constraintTop_toTopOf="@+id/profileImageview" />
 
         <TextView
             android:id="@+id/profilePointsAwardedTextview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:background="@color/activityBackground"
+            android:textAlignment="viewStart"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/profilePointsAwardedTitleTextview"
             app:layout_constraintStart_toStartOf="@+id/profilePointsAwardedTitleTextview"
             app:layout_constraintTop_toBottomOf="@+id/profilePointsAwardedTitleTextview" />
@@ -61,6 +73,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@color/activityBackground"
+            android:text="@string/department"
+            android:textAlignment="viewStart"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/profilePointsAwardedTextview"
             app:layout_constraintStart_toStartOf="@+id/profilePointsAwardedTextview"
             app:layout_constraintTop_toBottomOf="@+id/profilePointsAwardedTextview" />
@@ -70,6 +86,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:background="@color/activityBackground"
+            android:textAlignment="viewStart"
             app:layout_constraintEnd_toEndOf="@+id/profileDepartmentTitleTextview"
             app:layout_constraintStart_toStartOf="@+id/profileDepartmentTitleTextview"
             app:layout_constraintTop_toBottomOf="@+id/profileDepartmentTitleTextview" />
@@ -79,6 +97,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@color/activityBackground"
+            android:text="@string/position"
+            android:textAlignment="viewStart"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/profileDepartmentTextview"
             app:layout_constraintStart_toStartOf="@+id/profileDepartmentTextview"
             app:layout_constraintTop_toBottomOf="@+id/profileDepartmentTextview" />
@@ -88,6 +110,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:background="@color/activityBackground"
+            android:textAlignment="viewStart"
             app:layout_constraintEnd_toEndOf="@+id/profilePositionTitleTextview"
             app:layout_constraintStart_toStartOf="@+id/profilePositionTitleTextview"
             app:layout_constraintTop_toBottomOf="@+id/profilePositionTitleTextview" />
@@ -97,6 +121,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@color/activityBackground"
+            android:text="@string/points_to_award"
+            android:textAlignment="viewStart"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/profilePositionTextview"
             app:layout_constraintStart_toStartOf="@+id/profilePositionTextview"
             app:layout_constraintTop_toBottomOf="@+id/profilePositionTextview" />
@@ -106,6 +134,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:background="@color/activityBackground"
+            android:textAlignment="viewStart"
             app:layout_constraintEnd_toEndOf="@+id/profilePointsToAwardTitleTextview"
             app:layout_constraintStart_toStartOf="@+id/profilePointsToAwardTitleTextview"
             app:layout_constraintTop_toBottomOf="@+id/profilePointsToAwardTitleTextview" />
@@ -115,15 +145,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/imageView3"
-            app:layout_constraintStart_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+            android:background="@color/activityBackground"
+            android:text="@string/your_story"
+            android:textAlignment="viewStart"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/profileImageview"
+            app:layout_constraintStart_toStartOf="@+id/profileImageview"
+            app:layout_constraintTop_toBottomOf="@+id/profileImageview" />
 
         <TextView
             android:id="@+id/profileStrotyTextview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:textAlignment="viewStart"
             app:layout_constraintEnd_toEndOf="@+id/profilePointsToAwardTextview"
             app:layout_constraintStart_toStartOf="@+id/profileStortyTitleTextview"
             app:layout_constraintTop_toBottomOf="@+id/profileStortyTitleTextview" />
@@ -133,6 +168,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:textAlignment="viewStart"
             app:layout_constraintEnd_toStartOf="@+id/profilePointsToAwardTextview"
             app:layout_constraintStart_toStartOf="@+id/profileStrotyTextview"
             app:layout_constraintTop_toBottomOf="@+id/profileStrotyTextview" />
@@ -152,6 +188,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:background="@color/activityBackground"
+            android:textAlignment="viewStart"
+            android:textStyle="italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/profileNameTextview"
             app:layout_constraintTop_toTopOf="@+id/profileNameTextview" />

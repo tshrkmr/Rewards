@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".EditProfileActivity">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"
@@ -16,7 +19,7 @@
     <ImageButton
         android:id="@+id/createProfileImageButton"
         android:layout_width="154dp"
-        android:layout_height="228dp"
+        android:layout_height="205dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
@@ -26,76 +29,72 @@
         app:srcCompat="@drawable/default_photo" />
 
     <EditText
-        android:id="@+id/createUsernameEditText"
+        android:id="@+id/editFirstNameEditText"
+        android:layout_width="210dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/textBoxBackground"
+        android:ems="10"
+        android:hint="@string/first_name"
+        android:inputType="textPersonName"
+        android:maxLength="20"
+        android:textAlignment="viewStart"
+        android:textColorHint="@color/textOrange"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/editPasswordEditText"
+        app:layout_constraintStart_toStartOf="@+id/editPasswordEditText"
+        app:layout_constraintTop_toBottomOf="@+id/editPasswordEditText" />
+
+    <EditText
+        android:id="@+id/editLastNameEditText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toTopOf="@+id/createProfileImageButton" />
-
-    <EditText
-        android:id="@+id/mainPasswordEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="16dp"
+        android:background="@color/textBoxBackground"
         android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/createUsernameEditText"
-        app:layout_constraintStart_toStartOf="@+id/createUsernameEditText"
-        app:layout_constraintTop_toBottomOf="@+id/createUsernameEditText" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
+        android:hint="@string/last_name"
         android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/createUsernameEditText"
-        app:layout_constraintStart_toStartOf="@+id/createUsernameEditText"
-        app:layout_constraintTop_toBottomOf="@+id/mainPasswordEditText" />
+        android:maxLength="20"
+        android:textAlignment="viewStart"
+        android:textColorHint="@color/textOrange"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/editFirstNameEditText"
+        app:layout_constraintStart_toStartOf="@+id/editFirstNameEditText"
+        app:layout_constraintTop_toBottomOf="@+id/editFirstNameEditText" />
 
     <EditText
-        android:id="@+id/createLastName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/createUsernameEditText"
-        app:layout_constraintStart_toStartOf="@+id/createUsernameEditText"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
-
-    <EditText
-        android:id="@+id/createDepartmentName"
+        android:id="@+id/editDepartmentNameEditText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="16dp"
+        android:background="@color/textBoxBackground"
         android:ems="10"
+        android:hint="@string/department_name"
         android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/createUsernameEditText"
+        android:maxLength="30"
+        android:textAlignment="viewStart"
+        android:textColorHint="@color/textOrange"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/editLastNameEditText"
         app:layout_constraintStart_toStartOf="@+id/createProfileImageButton"
-        app:layout_constraintTop_toBottomOf="@+id/createLastName" />
+        app:layout_constraintTop_toBottomOf="@+id/createProfileImageButton" />
 
     <EditText
-        android:id="@+id/createPositionTitle"
+        android:id="@+id/editPositionTitleEditText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="16dp"
+        android:background="@color/textBoxBackground"
         android:ems="10"
+        android:hint="@string/position"
         android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/createDepartmentName"
-        app:layout_constraintStart_toStartOf="@+id/createDepartmentName"
-        app:layout_constraintTop_toBottomOf="@+id/createDepartmentName" />
+        android:maxLength="20"
+        android:textAlignment="viewStart"
+        android:textColorHint="@color/textOrange"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/editDepartmentNameEditText"
+        app:layout_constraintStart_toStartOf="@+id/editDepartmentNameEditText"
+        app:layout_constraintTop_toBottomOf="@+id/editDepartmentNameEditText" />
 
     <TextView
         android:id="@+id/createStoryTextview"
@@ -104,22 +103,57 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:text="TextView"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        app:layout_constraintStart_toStartOf="@+id/createPositionTitle"
-        app:layout_constraintTop_toBottomOf="@+id/createPositionTitle" />
+        app:layout_constraintStart_toStartOf="@+id/editPositionTitleEditText"
+        app:layout_constraintTop_toBottomOf="@+id/editPositionTitleEditText" />
 
     <EditText
-        android:id="@+id/createStoryEdittext"
+        android:id="@+id/createStoryEditText"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="200dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
+        android:background="@color/textBoxBackground"
         android:ems="10"
         android:gravity="start|top"
+        android:hint="@string/tell_us_something_about_yourself"
         android:inputType="textMultiLine"
+        android:maxLength="360"
+        android:textAlignment="viewStart"
+        android:textColorHint="@color/textOrange"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/createPositionTitle"
-        app:layout_constraintStart_toStartOf="@+id/createPositionTitle"
+        app:layout_constraintEnd_toEndOf="@+id/editPositionTitleEditText"
+        app:layout_constraintStart_toStartOf="@+id/editPositionTitleEditText"
         app:layout_constraintTop_toBottomOf="@+id/createStoryTextview" />
+
+    <TextView
+        android:id="@+id/editUsernameTextview"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="viewStart"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="@+id/createProfileImageButton" />
+
+    <EditText
+        android:id="@+id/editPasswordEditText"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/textBoxBackground"
+        android:ems="10"
+        android:hint="@string/select_password"
+        android:inputType="textPassword"
+        android:maxLength="40"
+        android:textAlignment="viewStart"
+        android:textColorHint="@color/textOrange"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/editUsernameTextview"
+        app:layout_constraintStart_toStartOf="@+id/editUsernameTextview"
+        app:layout_constraintTop_toBottomOf="@+id/editUsernameTextview" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

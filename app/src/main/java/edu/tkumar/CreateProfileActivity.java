@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,18 +60,19 @@ public class CreateProfileActivity extends AppCompatActivity {
         }
         if(intent.hasExtra("apiValue")){
             apiValue = intent.getStringExtra("apiValue");
+            Log.d(TAG, "getIntentData: " + apiValue);
         }
     }
 
     private void initializeFields(){
         createUsername = findViewById(R.id.createUsernameEditText);
-        createPassword = findViewById(R.id.createPasswordEdittext);
-        createFirstName = findViewById(R.id.createFirstName);
-        createLastName = findViewById(R.id.createLastName);
-        createDepartmentName = findViewById(R.id.createDepartmentName);
-        createPositionTitle = findViewById(R.id.createPositionTitle);
+        createPassword = findViewById(R.id.createPasswordEditText);
+        createFirstName = findViewById(R.id.createFirstNameEditText);
+        createLastName = findViewById(R.id.editLastNameEditText);
+        createDepartmentName = findViewById(R.id.editDepartmentNameEditText);
+        createPositionTitle = findViewById(R.id.editPositionTitleEditText);
         imageButton = findViewById(R.id.createProfileImageButton);
-        createStory = findViewById(R.id.createStoryEdittext);
+        createStory = findViewById(R.id.createStoryEditText);
         textSizeDisplay = findViewById(R.id.createStoryTextview);
     }
 
@@ -178,7 +180,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemID = item.getItemId();
-        if(itemID == R.id.save_menu){
+        if(itemID == R.id.save_menu && imageBytes != ""){
             getFieldData();
 
             if( userName.trim().isEmpty() || password.trim().isEmpty() || firstName.trim().isEmpty() || lastName.trim().isEmpty()
@@ -208,6 +210,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         Bitmap bitmap = drawable.getBitmap();
         ImageToText imageToText = new ImageToText(bitmap);
         imageBytes = imageToText.toBase64();
+        Log.d(TAG, "imageToBase64: " + imageBytes);
     }
 
 //    public void setImageBytes(String bytes){

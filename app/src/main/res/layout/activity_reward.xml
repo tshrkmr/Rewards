@@ -6,153 +6,146 @@
     android:layout_height="match_parent"
     tools:context=".RewardActivity">
 
-<androidx.constraintlayout.widget.Guideline
-android:id="@+id/guideline6"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:orientation="vertical"
-app:layout_constraintGuide_percent="0.40" />
-
-<ImageButton
-android:id="@+id/createProfileImageButton"
-android:layout_width="154dp"
-android:layout_height="228dp"
-android:layout_marginStart="16dp"
-android:layout_marginTop="16dp"
-android:layout_marginEnd="16dp"
-app:layout_constraintEnd_toStartOf="@+id/guideline6"
-app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintTop_toTopOf="parent"
-app:srcCompat="@drawable/default_photo" />
-
-    <EditText
-        android:id="@+id/mainPasswordEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
-    <EditText
-        android:id="@+id/createLastName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/textView6"
-        app:layout_constraintStart_toStartOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-    <EditText
-        android:id="@+id/createPositionTitle"
+    <TextView
+        android:id="@+id/rewardNameTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/textView7"
-        app:layout_constraintStart_toStartOf="@+id/textView7"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
-
-    <EditText
-        android:id="@+id/createStoryEdittext"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/createPositionTitle"
-        app:layout_constraintStart_toStartOf="@+id/textView11"
-        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/rewardImageView"
+        android:layout_width="141dp"
+        android:layout_height="175dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/rewardsimage"
+        app:layout_constraintStart_toStartOf="@+id/rewardNameTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardNameTextview"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/rewardPointsAwardedTitleTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toTopOf="@+id/createProfileImageButton" />
+        app:layout_constraintStart_toEndOf="@+id/rewardImageView"
+        app:layout_constraintTop_toTopOf="@+id/rewardImageView" />
 
     <TextView
-        android:id="@+id/textView6"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/mainPasswordEditText"
-        app:layout_constraintStart_toStartOf="@+id/mainPasswordEditText"
-        app:layout_constraintTop_toBottomOf="@+id/mainPasswordEditText" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/createLastName"
-        app:layout_constraintStart_toStartOf="@+id/createLastName"
-        app:layout_constraintTop_toBottomOf="@+id/createLastName" />
-
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/createProfileImageButton"
-        app:layout_constraintStart_toStartOf="@+id/createProfileImageButton"
-        app:layout_constraintTop_toBottomOf="@+id/createProfileImageButton" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/createPositionTitle"
-        app:layout_constraintStart_toStartOf="@+id/createProfileImageButton"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toStartOf="@+id/createPositionTitle"
-        app:layout_constraintStart_toStartOf="@+id/textView9"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName6"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        app:layout_constraintEnd_toEndOf="@+id/textView9"
-        app:layout_constraintStart_toEndOf="@+id/textView10"
-        app:layout_constraintTop_toTopOf="@+id/textView10" />
-
-    <TextView
-        android:id="@+id/textView11"
+        android:id="@+id/rewardPointsAwardedTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/textView8"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName6" />
+        app:layout_constraintEnd_toEndOf="@+id/rewardPointsAwardedTitleTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardPointsAwardedTitleTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardPointsAwardedTitleTextview" />
+
+    <TextView
+        android:id="@+id/rewardDepartmentTitleTextview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/rewardPointsAwardedTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardPointsAwardedTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardPointsAwardedTextview" />
+
+    <TextView
+        android:id="@+id/rewardDepartmentTextview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/rewardDepartmentTitleTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardDepartmentTitleTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardDepartmentTitleTextview" />
+
+    <TextView
+        android:id="@+id/rewardPositionTitleTextview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/rewardDepartmentTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardDepartmentTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardDepartmentTextview" />
+
+    <TextView
+        android:id="@+id/rewardPositionTextview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/rewardPositionTitleTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardPositionTitleTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardPositionTitleTextview" />
+
+    <TextView
+        android:id="@+id/rewardStoryTitleTextview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/your_story"
+        app:layout_constraintEnd_toStartOf="@+id/rewardPositionTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardImageView"
+        app:layout_constraintTop_toBottomOf="@+id/rewardPositionTextview" />
+
+    <TextView
+        android:id="@+id/rewardStoryTextview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/rewardPositionTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardStoryTitleTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardStoryTitleTextview" />
+
+    <TextView
+        android:id="@+id/rewardPointsToSendTitleTextview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/reward_points_to_send"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/rewardStoryTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardStoryTextview" />
+
+    <TextView
+        android:id="@+id/rewardCommentTitleTextview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/comment"
+        app:layout_constraintEnd_toEndOf="@+id/rewardPointsToSendTitleTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardPointsToSendTitleTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardPointsToSendEditText" />
+
+    <EditText
+        android:id="@+id/rewardPointsToSendEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/rewardStoryTextview"
+        app:layout_constraintStart_toEndOf="@+id/rewardPointsToSendTitleTextview"
+        app:layout_constraintTop_toTopOf="@+id/rewardPointsToSendTitleTextview" />
+
+    <EditText
+        android:id="@+id/rewardCommentEditText"
+        android:layout_width="0dp"
+        android:layout_height="185dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="@+id/rewardPointsToSendEditText"
+        app:layout_constraintStart_toStartOf="@+id/rewardCommentTitleTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardCommentTitleTextview" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".45" />
 </androidx.constraintlayout.widget.ConstraintLayout>
