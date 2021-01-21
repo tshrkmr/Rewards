@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkSharedPreferences(){
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         String myAPI = sharedPreferences.getString("apiValue", "noAPI");
-        if(myAPI == ("noAPI")) {
+        if(myAPI.equals("noAPI")) {
             createApiNeededDialog();
         }
         Log.d(TAG, "checkSharedPreferences: " + myAPI);
@@ -238,12 +238,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void createProfile(View v){
         String myAPI = sharedPreferences.getString("apiValue", "noAPI");
-        if(myAPI == ("noAPI")) {
+        if(myAPI.equals("noAPI")) {
             createApiNeededDialog();
             return;
         }
         Intent intent = new Intent(this, CreateProfileActivity.class);
-        intent.putExtra("location", "Chicago, IL");
+        intent.putExtra("location", "Chicago");
         intent.putExtra("apiValue", myAPI);
         startActivity(intent);
     }

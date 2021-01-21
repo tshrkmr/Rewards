@@ -2,17 +2,35 @@ package edu.tkumar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-public class ProfileActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private RewardAdapter rewardAdapter;
+    private RecyclerView recyclerView;
+    private final List<Reward> rewardList= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        setUpProfileRecyclerview();
+    }
+
+    private void setUpProfileRecyclerview(){
+        recyclerView = findViewById(R.id.profileRecyclerView);
+        rewardAdapter = new RewardAdapter(rewardList, this);
+        recyclerView.setAdapter(rewardAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -31,5 +49,10 @@ public class ProfileActivity extends AppCompatActivity {
         }else if(itemID == R.id.show_leaderboard_menu) {
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

@@ -34,9 +34,9 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull @NotNull EmployeeViewHolder holder, int position) {
         Employee employee = employeeList.get(position);
-        holder.employeeName.setText(employee.getName());
-        holder.employeeTitle.setText(String.format("%s %s", employee.getTitle(), employee.getDepartment()));
-        holder.employeePoints.setText(String.format(Locale.getDefault(), "%.0f", employee.getPoints()));
+        holder.employeeName.setText(String.format("%s %s", employee.getFirstName(), employee.getLastName()));
+        holder.employeeTitle.setText(String.format("%s %s", employee.getPosition(), employee.getDepartment()));
+        holder.employeePoints.setText(employee.getRemainingPointsToAward());
         //holder.employeeImage.setImageDrawable(employee.get);
     }
 

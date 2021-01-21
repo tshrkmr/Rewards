@@ -13,11 +13,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 public class CreateProfileAPIRunnable implements Runnable{
 
-    private CreateProfileActivity createProfileActivity;
+    private final CreateProfileActivity createProfileActivity;
     private final String firstName, lastName, userName, department, story, position, password, remainingPointsToAward, location, imageBytes, apiValue;
     private static final String base_url = "http://christopherhield.org/api/Profile/CreateProfile";
     private static final String TAG = "CreateProfileAPIRunnable";
@@ -42,34 +43,28 @@ public class CreateProfileAPIRunnable implements Runnable{
     @Override
     public void run() {
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("Profile image", imageBytes);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-
         HttpURLConnection connection = null;
         BufferedReader reader = null;
 
-        Uri.Builder buildURL = Uri.parse(base_url).buildUpon();
-        buildURL.appendQueryParameter("firstName", firstName);
-        buildURL.appendQueryParameter("lastName", lastName);
-        buildURL.appendQueryParameter("userName", userName);
-        buildURL.appendQueryParameter("department", department);
-        buildURL.appendQueryParameter("story", story);
-        buildURL.appendQueryParameter("position", position);
-        buildURL.appendQueryParameter("password", password);
-        buildURL.appendQueryParameter("remainingPointsToAward", remainingPointsToAward);
-        buildURL.appendQueryParameter("location", location);
-        String urlToUse = buildURL.build().toString();
-        Log.d(TAG, "run: " + urlToUse);
-
-        StringBuilder result = new StringBuilder();
-
         try {
+            String urlString = "http://christopherhield.org/api/Profile/CreateProfile";
+
+            Uri.Builder buildURL = Uri.parse(urlString).buildUpon();
+            buildURL.appendQueryParameter("firstName", firstName);
+            buildURL.appendQueryParameter("lastName", lastName);
+            buildURL.appendQueryParameter("userName", userName);
+            buildURL.appendQueryParameter("department", department);
+            buildURL.appendQueryParameter("story", story);
+            buildURL.appendQueryParameter("position", position);
+            buildURL.appendQueryParameter("password", password);
+            buildURL.appendQueryParameter("remainingPointsToAward", remainingPointsToAward);
+            buildURL.appendQueryParameter("location", location);
+
+
+            String urlToUse = buildURL.build().toString();
             URL url = new URL(urlToUse);
+
+            Log.d(TAG, "run: " + urlToUse);
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -79,12 +74,14 @@ public class CreateProfileAPIRunnable implements Runnable{
             connection.connect();
 
             OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-            out.write(jsonObject.toString());
+            out.write(imageBytes);
             out.close();
 
             int responseCode = connection.getResponseCode();
+            Log.d(TAG, "run: response code " + responseCode);
+            StringBuilder result = new StringBuilder();
 
-            if (responseCode == HTTP_OK) {
+            if (responseCode == HTTP_OK || responseCode == HTTP_CREATED) {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                 String line;
@@ -99,10 +96,11 @@ public class CreateProfileAPIRunnable implements Runnable{
                     result.append(line).append("\n");
                 }
             }
-            Log.d(TAG, "run: " + result.toString());
+            Log.d(TAG, "run: result " + result.toString());
+            //mainActivity.showResults(result.toString());
+            return;
         } catch (Exception e) {
             e.printStackTrace();
-            Log.d(TAG, "run: error");
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -115,6 +113,6 @@ public class CreateProfileAPIRunnable implements Runnable{
                 }
             }
         }
-        //process(result.toString());
+        //mainActivity.showResults("Error performing POST request");
     }
 }

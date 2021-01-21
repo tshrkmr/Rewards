@@ -40,6 +40,10 @@ public class CreateProfileActivity extends AppCompatActivity {
     private String imageBytes = "";
     private static final String TAG = "CreateProfileActivity";
 
+    //Temporary
+    private EditText deleteProfile;
+    private String tempProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +78,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         imageButton = findViewById(R.id.createProfileImageButton);
         createStory = findViewById(R.id.createStoryEditText);
         textSizeDisplay = findViewById(R.id.createStoryTextview);
+        deleteProfile = findViewById(R.id.deleteprofileEditText);
     }
 
     private void setupEditText() {
@@ -180,7 +185,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemID = item.getItemId();
-        if(itemID == R.id.save_menu && imageBytes != ""){
+        if(itemID == R.id.save_menu && !imageBytes.equals("")){
             getFieldData();
 
             if( userName.trim().isEmpty() || password.trim().isEmpty() || firstName.trim().isEmpty() || lastName.trim().isEmpty()
@@ -203,6 +208,8 @@ public class CreateProfileActivity extends AppCompatActivity {
         departmentName = createDepartmentName.getText().toString();
         positionTitle = createPositionTitle.getText().toString();
         story = createStory.getText().toString();
+
+
     }
 
     private void imageToBase64(){
@@ -232,5 +239,11 @@ public class CreateProfileActivity extends AppCompatActivity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void temporaryDelete(View v){
+        tempProfile = deleteProfile.getText().toString();
+        DeleteProfileAPIRunnable deleteProfileAPIRunnable = new DeleteProfileAPIRunnable(tempProfile, apiValue);
+        new Thread(deleteProfileAPIRunnable).start();
     }
 }

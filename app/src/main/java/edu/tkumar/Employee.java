@@ -5,70 +5,92 @@ import android.util.Log;
 import java.io.Serializable;
 
 public class Employee implements Serializable {
-    private String name;
+    private String firstName;
+    private String lastName;
+    private String username;
     private String department;
-    private String title;
-    private double points;
     private String story;
+    private String position;
+    private String password;
+    private String remainingPointsToAward;
+    private String location;
+    private String imageBytes;
+    private Reward reward;
+
     private static final String TAG = "Employee";
 
-    public Employee(String name, String department, String title, int points, String story) {
-        this.name = name;
+    public Employee(String firstName, String lastName, String username, String department, String story, String position, String password, String remainingPointsToAward, String location, String imageBytes, Reward reward) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
         this.department = department;
-        this.title = title;
-        this.points = points;
         this.story = story;
-        Log.d(TAG, "Employee: employee created");
+        this.position = position;
+        this.password = password;
+        this.remainingPointsToAward = remainingPointsToAward;
+        this.location = location;
+        this.imageBytes = imageBytes;
+        this.reward = reward;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
-    public void setStory(String story) {
-        this.story = story;
-    }
-
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
     public String getDepartment() {
         return department;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public double getPoints() {
-        return points;
-    }
-
     public String getStory() {
         return story;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRemainingPointsToAward() {
+        return remainingPointsToAward;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getImageBytes() {
+        return imageBytes;
+    }
+
+    public Reward getReward() {
+        return reward;
     }
 
     @Override
     public String toString() {
         return "Employee{" +
-                "name='" + name + '\'' +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", username='" + username + '\'' +
                 ", department='" + department + '\'' +
-                ", position='" + title + '\'' +
-                ", points=" + points +
                 ", story='" + story + '\'' +
+                ", position='" + position + '\'' +
+                ", password='" + password + '\'' +
+                ", remainingPointsToAward='" + remainingPointsToAward + '\'' +
+                ", location='" + location + '\'' +
+                ", imageBytes='" + imageBytes + '\'' +
+                ", reward=" + reward +
                 '}';
     }
 }

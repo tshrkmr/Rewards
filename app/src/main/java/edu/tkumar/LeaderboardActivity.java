@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -24,17 +23,17 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_leaderboard);
 
 
-        for(int i = 0;i<10;i++){
-            Employee employee = new Employee("employee", "shipping", "CEO", 1000, "HI");
-            employeeList.add(employee);
-            //Log.d(TAG, "onCreate: employee updated");
-        }
+//        for(int i = 0;i<10;i++){
+//            Employee employee = new Employee("employee", "shipping", "CEO", "1000", "HI");
+//            employeeList.add(employee);
+//            //Log.d(TAG, "onCreate: employee updated");
+//        }
 
-        setUpRecyclerView();
+        setUpLeaderboardRecyclerView();
     }
 
-    private void setUpRecyclerView(){
-        recyclerView = findViewById(R.id.recyclerView);
+    private void setUpLeaderboardRecyclerView(){
+        recyclerView = findViewById(R.id.leaderboardRecyclerView);
         employeeAdapter = new EmployeeAdapter(employeeList, this);
         recyclerView.setAdapter(employeeAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
