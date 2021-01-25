@@ -14,4 +14,6 @@
     <color name="darkTextOrange">#E37E2A</color>
     <color name="textBoxBackground">#D3D3D3</color>
     <color name="activityBackground">#FAFAFA</color>
+    <color name="recyclerviewBackground">#F0F0F0</color>
+    <color name="storyBackground">#F4F4F4</color>
 </resources>

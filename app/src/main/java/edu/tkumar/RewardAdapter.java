@@ -32,7 +32,11 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull RewardViewHolder holder, int position) {
-
+        Reward reward = rewardList.get(position);
+        holder.rewardDate.setText(reward.getAwardDate());
+        holder.rewardSender.setText(reward.getGivenName());
+        holder.rewardPoints.setText(reward.getAmount());
+        holder.rewardNote.setText(reward.getNote());
     }
 
     @Override

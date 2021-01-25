@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private SharedPreferences sharedPreferences;
-    private EditText firstName, lastName, emailID, studentID;
-    private String fName, lName, eID, sID, location;
+    private EditText firstName, lastName, emailID, studentID, mainUserName, mainPassword;
+    private String fName, lName, eID, sID, location, userName, password;
     private LocationManager locationManager;
     private Criteria criteria;
     private static final int MY_LOCATION_REQUEST_CODE_ID = 111;
@@ -48,7 +48,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         checkSharedPreferences();
+        initializeFields();
         findLocation();
+    }
+
+    private void initializeFields(){
+        mainUserName = findViewById(R.id.mainUsernameEditText);
+        mainPassword = findViewById(R.id.mainPasswordEditText);
     }
 
     private void findLocation(){
@@ -229,12 +235,12 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-//    public void clearSavedApi(View v){
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.clear();
-//        editor.apply();
-//        Toast.makeText(MainActivity.this, "API Cleared", Toast.LENGTH_LONG).show();
-//    }
+    public void clearSavedApi(View v){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+        Toast.makeText(MainActivity.this, "API Cleared", Toast.LENGTH_LONG).show();
+    }
 
     public void createProfile(View v){
         String myAPI = sharedPreferences.getString("apiValue", "noAPI");
@@ -245,6 +251,27 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CreateProfileActivity.class);
         intent.putExtra("location", "Chicago");
         intent.putExtra("apiValue", myAPI);
+        startActivity(intent);
+    }
+
+    public void loginEmployee(View v){
+        String myAPI = sharedPreferences.getString("apiValue", "noAPI");
+        if(myAPI.equals("noAPI")) {
+            createApiNeededDialog();
+            return;
+        }
+        userName = mainUserName.getText().toString();
+        password = mainPassword.getText().toString();
+        if(userName.trim().isEmpty() || password.trim().isEmpty()){
+            return;
+        }
+        LoginAPIRunnable loginAPIRunnable = new LoginAPIRunnable(myAPI, userName, password, this);
+        new Thread(loginAPIRunnable).start();
+    }
+
+    public void getEmployeeDetails(Employee employee){
+        Intent intent = new Intent(this, ProfileActivity.class);
+        intent.putExtra("employee", employee);
         startActivity(intent);
     }
 }

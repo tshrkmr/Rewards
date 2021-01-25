@@ -5,32 +5,90 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private RewardAdapter rewardAdapter;
     private RecyclerView recyclerView;
     private final List<Reward> rewardList= new ArrayList<>();
+    private Employee employee;
+    private TextView profileName, profileLocation, profilePointsAwarded, profileDepartment, profilePosition, profilePointsToAward, profileStory, profileRewardHistoryTitleTextview;
+    private ImageView profileImageView;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         setUpProfileRecyclerview();
+
+        Intent intent = getIntent();
+        employee = (Employee) intent.getSerializableExtra("employee");
+
+        convertTextToImage();
+
+        initializeFields();
+
+        enterFieldData();
+
+        updateRewardHistoryTitle();
+
+        setUpActionBar();
+
+        setUpProfileRecyclerview();
     }
 
+    private void initializeFields(){
+        profileName = findViewById(R.id.profileNameTextview);
+        profileLocation = findViewById(R.id.profileLocationTextview);
+        profilePointsAwarded = findViewById(R.id.profilePointsAwardedTextview);
+        profileDepartment = findViewById(R.id.profileDepartmentTextview);
+        profilePosition = findViewById(R.id.profilePositionTextview);
+        profilePointsToAward = findViewById(R.id.profilePointsToAwardTextview);
+        profileStory = findViewById(R.id.profileStrotyTextview);
+        profileImageView = findViewById(R.id.profileImageview);
+        profileImageView.setImageBitmap(bitmap);
+        profileRewardHistoryTitleTextview = findViewById(R.id.profileRewardHistoryTitleTextview);
+    }
+
+    private void enterFieldData(){
+        profileName.setText(String.format("%s %s  (%s)", employee.getFirstName(), employee.getLastName(), employee.getUsername()));
+        profileLocation.setText(employee.getLocation());
+        //profilePointsAwarded.setText();
+        profileDepartment.setText(employee.getDepartment());
+        profilePosition.setText(employee.getPosition());
+        profilePointsToAward.setText(employee.getRemainingPointsToAward());
+        profileStory.setText(employee.getStory());
+
+    }
     private void setUpProfileRecyclerview(){
         recyclerView = findViewById(R.id.profileRecyclerView);
         rewardAdapter = new RewardAdapter(rewardList, this);
         recyclerView.setAdapter(rewardAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        rewardAdapter.notifyDataSetChanged();
+    }
+
+    private void convertTextToImage(){
+        TextToImage textToImage = new TextToImage(employee.getImageBytes());
+        bitmap = textToImage.textToImage();
+    }
+
+    private void updateRewardHistoryTitle(){
+        profileRewardHistoryTitleTextview.setText(String.format(Locale.getDefault(),"Reward History (%d):", rewardList.size()));
     }
 
     @Override
@@ -54,5 +112,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
 
+    }
+
+    private void setUpActionBar(){
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.icon);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setTitle("Your Profile");
     }
 }

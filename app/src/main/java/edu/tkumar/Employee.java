@@ -3,6 +3,8 @@ package edu.tkumar;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Employee implements Serializable {
     private String firstName;
@@ -16,10 +18,19 @@ public class Employee implements Serializable {
     private String location;
     private String imageBytes;
     private Reward reward;
+    private List<Reward> rewardList = new ArrayList<>();
+
+    public void setRewardList(List<Reward> rewardList) {
+        this.rewardList = rewardList;
+    }
+
+    public List<Reward> getRewardList() {
+        return rewardList;
+    }
 
     private static final String TAG = "Employee";
 
-    public Employee(String firstName, String lastName, String username, String department, String story, String position, String password, String remainingPointsToAward, String location, String imageBytes, Reward reward) {
+    public Employee(String firstName, String lastName, String username, String department, String story, String position, String password, String remainingPointsToAward, String location, String imageBytes) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -30,6 +41,49 @@ public class Employee implements Serializable {
         this.remainingPointsToAward = remainingPointsToAward;
         this.location = location;
         this.imageBytes = imageBytes;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public void setStory(String story) {
+        this.story = story;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRemainingPointsToAward(String remainingPointsToAward) {
+        this.remainingPointsToAward = remainingPointsToAward;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setImageBytes(String imageBytes) {
+        this.imageBytes = imageBytes;
+    }
+
+    public void setReward(Reward reward) {
         this.reward = reward;
     }
 

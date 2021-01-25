@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/activityBackground"
     tools:context=".CreateProfileActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -107,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/your_story"
-            android:textSize="16sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@+id/editPositionTitleEditText"
             app:layout_constraintTop_toBottomOf="@+id/editPositionTitleEditText" />
 
@@ -115,7 +116,6 @@
             android:id="@+id/createStoryEditText"
             android:layout_width="0dp"
             android:layout_height="200dp"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:background="@color/textBoxBackground"
             android:ems="10"
@@ -191,5 +191,15 @@
             app:layout_constraintEnd_toStartOf="@+id/deleteButton"
             app:layout_constraintStart_toStartOf="@+id/createStoryEditText"
             app:layout_constraintTop_toTopOf="@+id/deleteButton" />
+
+        <ProgressBar
+            android:id="@+id/createProgressBar"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

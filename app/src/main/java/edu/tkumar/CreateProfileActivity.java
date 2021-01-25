@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +31,8 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     private EditText createStory, createUsername, createPassword, createFirstName, createLastName, createDepartmentName, createPositionTitle;
     private String story, userName, password, firstName, lastName, departmentName, positionTitle;
-    private final String empty = "empty";
+    private ProgressBar progressBar;
+    private final String empty = "empty", noImage = "noImage";
     private TextView textSizeDisplay;
     private ImageButton imageButton;
     private static final int MAX_LEN = 360;
@@ -54,6 +56,9 @@ public class CreateProfileActivity extends AppCompatActivity {
         initializeFields();
 
         setupEditText();
+
+        setUpActionBar();
+
     }
 
     private void getIntentData(){
@@ -79,6 +84,8 @@ public class CreateProfileActivity extends AppCompatActivity {
         createStory = findViewById(R.id.createStoryEditText);
         textSizeDisplay = findViewById(R.id.createStoryTextview);
         deleteProfile = findViewById(R.id.deleteprofileEditText);
+        progressBar = findViewById(R.id.createProgressBar);
+        progressBar.setVisibility(View.GONE);
     }
 
     private void setupEditText() {
@@ -185,16 +192,19 @@ public class CreateProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int itemID = item.getItemId();
-        if(itemID == R.id.save_menu && !imageBytes.equals("")){
+        if(itemID == R.id.save_menu){
             getFieldData();
-
-            if( userName.trim().isEmpty() || password.trim().isEmpty() || firstName.trim().isEmpty() || lastName.trim().isEmpty()
+            if(imageBytes.equals("")){
+                profileDataIncorrect(noImage);
+            }else if( userName.trim().isEmpty() || password.trim().isEmpty() || firstName.trim().isEmpty() || lastName.trim().isEmpty()
                     || departmentName.trim().isEmpty() || positionTitle.trim().isEmpty() || story.trim().isEmpty()){
                 profileDataIncorrect(empty);
             }else {
+
                 CreateProfileAPIRunnable createProfileAPIRunnable = new CreateProfileAPIRunnable(this, firstName,
                         lastName, userName, departmentName, story, positionTitle, password,"1000", locationValue, imageBytes, apiValue);
                 new Thread(createProfileAPIRunnable).start();
+                progressBar.setVisibility(View.VISIBLE);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -208,8 +218,6 @@ public class CreateProfileActivity extends AppCompatActivity {
         departmentName = createDepartmentName.getText().toString();
         positionTitle = createPositionTitle.getText().toString();
         story = createStory.getText().toString();
-
-
     }
 
     private void imageToBase64(){
@@ -220,21 +228,16 @@ public class CreateProfileActivity extends AppCompatActivity {
         Log.d(TAG, "imageToBase64: " + imageBytes);
     }
 
-//    public void setImageBytes(String bytes){
-//        imageBytes = bytes;
-//        Log.d(TAG, "onOptionsItemSelected: " + imageBytes);
-//    }
-
     private void profileDataIncorrect(String issue){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         if(issue.equals(empty)) {
             builder.setTitle("One or More Fields not Entered");
             builder.setMessage("Please enter data in all the fields");
         }
-//        else if(issue.equals(nullValue)) {
-//            builder.setTitle("One or More Fields Incorrect");
-//            builder.setMessage("Null values cannot be accepted");
-//        }
+        else if(issue.equals(noImage)) {
+            builder.setTitle("One or More Fields Incorrect");
+            builder.setMessage("Please select an image");
+        }
         builder.setPositiveButton("OK", (dialog, which) -> {
         });
         AlertDialog dialog = builder.create();
@@ -245,5 +248,19 @@ public class CreateProfileActivity extends AppCompatActivity {
         tempProfile = deleteProfile.getText().toString();
         DeleteProfileAPIRunnable deleteProfileAPIRunnable = new DeleteProfileAPIRunnable(tempProfile, apiValue);
         new Thread(deleteProfileAPIRunnable).start();
+    }
+
+    public void profileCreated(Employee employee){
+        progressBar.setVisibility(View.GONE );
+        Intent intent= new Intent(this, ProfileActivity.class);
+        intent.putExtra("employee", employee);
+        startActivity(intent);
+    }
+
+    private void setUpActionBar(){
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.icon);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setTitle("Create Profile");
     }
 }

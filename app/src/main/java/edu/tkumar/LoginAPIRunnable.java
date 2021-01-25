@@ -3,6 +3,7 @@ package edu.tkumar;
 import android.net.Uri;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,76 +13,55 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class CreateProfileAPIRunnable implements Runnable{
+public class LoginAPIRunnable implements Runnable{
 
-    private final CreateProfileActivity createProfileActivity;
-    private final String firstName, lastName, userName, department, story, position, password, remainingPointsToAward, location, imageBytes, apiValue;
-    private static final String TAG = "CreateProfileAPIRunnable";
+    private String apiValue, userName, password;
+    private MainActivity mainActivity;
+    private static final String TAG = "LoginAPIRunnable";
+    private  List<Reward> rewardList= new ArrayList<>();
 
-    public CreateProfileAPIRunnable(CreateProfileActivity createProfileActivity, String firstName, String lastName,
-                                    String userName, String department, String story, String position, String password,
-                                    String remainingPointsToAward, String location, String imageBytes, String apiValue) {
-        this.createProfileActivity = createProfileActivity;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.department = department;
-        this.story = story;
-        this.position = position;
-        this.password = password;
-        this.remainingPointsToAward = remainingPointsToAward;
-        this.location = location;
-        this.imageBytes = imageBytes;
+    public LoginAPIRunnable(String apiValue, String userName, String password, MainActivity mainActivity) {
         this.apiValue = apiValue;
+        this.userName = userName;
+        this.password = password;
+        this.mainActivity = mainActivity;
     }
 
     @Override
     public void run() {
-
         HttpURLConnection connection = null;
         BufferedReader reader = null;
 
         try {
-            String urlString = "http://christopherhield.org/api/Profile/CreateProfile";
+            String urlString = "http://christopherhield.org/api/Profile/Login";
 
             Uri.Builder buildURL = Uri.parse(urlString).buildUpon();
-            buildURL.appendQueryParameter("firstName", firstName);
-            buildURL.appendQueryParameter("lastName", lastName);
             buildURL.appendQueryParameter("userName", userName);
-            buildURL.appendQueryParameter("department", department);
-            buildURL.appendQueryParameter("story", story);
-            buildURL.appendQueryParameter("position", position);
             buildURL.appendQueryParameter("password", password);
-            buildURL.appendQueryParameter("remainingPointsToAward", remainingPointsToAward);
-            buildURL.appendQueryParameter("location", location);
-
 
             String urlToUse = buildURL.build().toString();
             URL url = new URL(urlToUse);
 
-            Log.d(TAG, "run: " + urlToUse);
+            Log.d(TAG, "run: " + urlToUse + userName + password);
 
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("GET");
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("ApiKey", apiValue);
             connection.connect();
 
-            OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-            out.write(imageBytes);
-            out.close();
 
             int responseCode = connection.getResponseCode();
-            Log.d(TAG, "run: response code " + responseCode);
+            Log.d(TAG, "run: response code" + responseCode);
             StringBuilder result = new StringBuilder();
 
-            if (responseCode == HTTP_OK || responseCode == HTTP_CREATED) {
+            if (responseCode == HTTP_OK) {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                 String line;
@@ -129,9 +109,24 @@ public class CreateProfileAPIRunnable implements Runnable{
             String rImageBytes = jsonObject.getString("imageBytes");
 
             Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rPassword, rRemainingPointsToReward, rLocation, rImageBytes);
-            createProfileActivity.runOnUiThread(()->createProfileActivity.profileCreated(employee));
 
-            Log.d(TAG, "process: " + rFirstName + "" + rLastName);
+            JSONArray jsonArray = jsonObject.getJSONArray("rewardRecordViews");
+
+            int length =jsonArray.length();
+
+            for(int i =0; i<length; i++) {
+                JSONObject details = jsonArray.getJSONObject(i);
+                String rGivenName = details.getString("givenName");
+                String rAmount = details.getString("amount");
+                String rNote = details.getString("note");
+                String rAwardDate= details.getString("awardDate");
+                Reward reward = new Reward(rGivenName, rAmount, rNote, rAwardDate);
+                rewardList.add(reward);
+            }
+            employee.setRewardList(rewardList);
+            mainActivity.runOnUiThread(()->mainActivity.getEmployeeDetails(employee));
+
+            //Log.d(TAG, "process: " + rFirstName + "" + rLastName);
         }catch(JSONException e){
             e.printStackTrace();
         }catch (NullPointerException e){

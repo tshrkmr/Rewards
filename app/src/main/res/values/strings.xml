@@ -25,10 +25,10 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="show_leaderboard">Show Leaderboard</string>
-    <string name="points_awarded">Points Awarded</string>
-    <string name="department">Department</string>
-    <string name="position">Position</string>
-    <string name="points_to_award">Points to Award</string>
+    <string name="points_awarded">Points Awarded:</string>
+    <string name="department">Department:</string>
+    <string name="position">Position:</string>
+    <string name="points_to_award">Points to Award:</string>
     <string name="reward_points_to_send">Reward Points To Send:</string>
     <string name="comment">Comment:</string>
 </resources>
