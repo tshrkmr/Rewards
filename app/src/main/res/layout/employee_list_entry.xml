@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.62" />
+        app:layout_constraintGuide_percent=".7" />
 
     <TextView
         android:id="@+id/employeeNameTextview"
@@ -18,19 +18,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:textAlignment="viewStart"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toEndOf="@+id/employeeImmageview"
-        app:layout_constraintTop_toTopOf="@+id/employeeImmageview" />
+        app:layout_constraintStart_toEndOf="@+id/employeeImageview"
+        app:layout_constraintTop_toTopOf="@+id/employeeImageview" />
 
     <TextView
         android:id="@+id/employeeTitleTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:textAlignment="viewStart"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toTopOf="@+id/listSeperatorImageview"
         app:layout_constraintEnd_toEndOf="@+id/employeeNameTextview"
-        app:layout_constraintStart_toStartOf="@+id/employeeNameTextview"
-        app:layout_constraintTop_toBottomOf="@+id/employeeNameTextview" />
+        app:layout_constraintStart_toStartOf="@+id/employeeNameTextview" />
 
     <TextView
         android:id="@+id/employeePointsTextview"
@@ -38,7 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
-        android:textStyle="bold"
+        android:textAlignment="viewEnd"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/employeeNameTextview" />
@@ -50,12 +56,12 @@
         android:layout_marginTop="16dp"
         android:contentDescription="@string/list_seperator"
         app:layout_constraintEnd_toEndOf="@+id/employeePointsTextview"
-        app:layout_constraintStart_toStartOf="@+id/employeeImmageview"
-        app:layout_constraintTop_toBottomOf="@+id/employeeImmageview"
+        app:layout_constraintStart_toStartOf="@+id/employeeImageview"
+        app:layout_constraintTop_toBottomOf="@+id/employeeImageview"
         app:srcCompat="@drawable/separator" />
 
     <ImageView
-        android:id="@+id/employeeImmageview"
+        android:id="@+id/employeeImageview"
         android:layout_width="67dp"
         android:layout_height="82dp"
         android:layout_marginStart="16dp"

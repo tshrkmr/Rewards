@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -192,6 +193,8 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        selectedImage.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream);
         imageButton.setImageBitmap(selectedImage);
         imageToBase64();
     }

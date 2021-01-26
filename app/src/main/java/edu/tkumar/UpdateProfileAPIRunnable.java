@@ -125,7 +125,10 @@ public class UpdateProfileAPIRunnable implements Runnable{
             String rLocation = jsonObject.getString("location");
             String rImageBytes = jsonObject.getString("imageBytes");
 
-            Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rPassword, rRemainingPointsToReward, rLocation, rImageBytes);
+            Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rImageBytes);
+            employee.setPassword(rPassword);
+            employee.setRemainingPointsToAward(rRemainingPointsToReward);
+            employee.setLocation(rLocation);
 
             JSONArray jsonArray = jsonObject.getJSONArray("rewardRecordViews");
 

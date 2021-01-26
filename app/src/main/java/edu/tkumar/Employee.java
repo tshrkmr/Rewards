@@ -19,27 +19,16 @@ public class Employee implements Serializable {
     private String imageBytes;
     private Reward reward;
     private List<Reward> rewardList = new ArrayList<>();
-
-    public void setRewardList(List<Reward> rewardList) {
-        this.rewardList = rewardList;
-    }
-
-    public List<Reward> getRewardList() {
-        return rewardList;
-    }
-
+    private List<Employee> employeeList = new ArrayList<>();
     private static final String TAG = "Employee";
 
-    public Employee(String firstName, String lastName, String username, String department, String story, String position, String password, String remainingPointsToAward, String location, String imageBytes) {
+    public Employee(String firstName, String lastName, String username, String department, String story, String position, String imageBytes) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.department = department;
         this.story = story;
         this.position = position;
-        this.password = password;
-        this.remainingPointsToAward = remainingPointsToAward;
-        this.location = location;
         this.imageBytes = imageBytes;
     }
 
@@ -87,6 +76,10 @@ public class Employee implements Serializable {
         this.reward = reward;
     }
 
+    public void setRewardList(List<Reward> rewardList) {
+        this.rewardList = rewardList;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -129,6 +122,10 @@ public class Employee implements Serializable {
 
     public Reward getReward() {
         return reward;
+    }
+
+    public List<Reward> getRewardList() {
+        return rewardList;
     }
 
     @Override

@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -14,7 +16,8 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
 
     private EmployeeAdapter employeeAdapter;
     private RecyclerView recyclerView;
-    private final List<Employee> employeeList = new ArrayList<>();
+    private List<Employee> employeeList = new ArrayList<>();
+    private String apiValue;
     private static final String TAG = "LeaderboardActivity";
 
     @Override
@@ -30,6 +33,31 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
 //        }
 
         setUpLeaderboardRecyclerView();
+
+        getIntentData();
+
+        GetAllProfilesAPIRunnable getAllProfilesAPIRunnable = new GetAllProfilesAPIRunnable(this, apiValue);
+        new Thread(getAllProfilesAPIRunnable).start();
+
+    }
+
+    private void getIntentData(){
+        Intent intent = getIntent();
+
+        if(intent.hasExtra("apiValue")){
+            apiValue = intent.getStringExtra("apiValue");
+            Log.d(TAG, "getIntentData: " + apiValue);
+        }
+
+    }
+
+    public void clearEmployeeList(){
+        employeeList.clear();
+    }
+
+    public void updateEmployeeList(Employee employee){
+        employeeList.add(employee);
+        employeeAdapter.notifyDataSetChanged();
     }
 
     private void setUpLeaderboardRecyclerView(){
@@ -43,5 +71,12 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View v) {
 
+    }
+
+    private void setUpActionBar(){
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.icon);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setTitle("Leaderboard");
     }
 }

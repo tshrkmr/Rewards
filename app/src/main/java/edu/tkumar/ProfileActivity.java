@@ -25,6 +25,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private RewardAdapter rewardAdapter;
     private RecyclerView recyclerView;
     private final List<Reward> rewardList= new ArrayList<>();
+    private List<Employee> employeeList = new ArrayList<>();
     private Employee employee;
     private TextView profileName, profileLocation, profilePointsAwarded, profileDepartment, profilePosition, profilePointsToAward, profileStory, profileRewardHistoryTitleTextview;
     private ImageView profileImageView;
@@ -73,7 +74,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         profilePointsToAward = findViewById(R.id.profilePointsToAwardTextview);
         profileStory = findViewById(R.id.profileStrotyTextview);
         profileImageView = findViewById(R.id.profileImageview);
-        profileImageView.setImageBitmap(bitmap);
         profileRewardHistoryTitleTextview = findViewById(R.id.profileRewardHistoryTitleTextview);
     }
 
@@ -85,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         profilePosition.setText(employee.getPosition());
         profilePointsToAward.setText(employee.getRemainingPointsToAward());
         profileStory.setText(employee.getStory());
-
+        profileImageView.setImageBitmap(bitmap);
     }
     private void setUpProfileRecyclerview(){
         recyclerView = findViewById(R.id.profileRecyclerView);
@@ -118,6 +118,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }else if(itemID == R.id.edit_menu){
             openEditActivity();
         }else if(itemID == R.id.show_leaderboard_menu) {
+            setLeaderboardData();
+//            GetAllProfilesAPIRunnable getAllProfilesAPIRunnable = new GetAllProfilesAPIRunnable(this, apiValue);
+//            new Thread(getAllProfilesAPIRunnable).start();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -132,6 +135,16 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
 
+    }
+
+    public void setLeaderboardData(){
+        Intent intent = new Intent(this, LeaderboardActivity.class);
+        intent.putExtra("apiValue", apiValue);
+        //intent.putStringArrayListExtra("employeeList", employeeList);
+//        intent.putExtra("employeeList", (ArrayList<Employee>) employeeList);
+//        intent.putExtra("apiValue", apiValue);
+        //intent.putCharSequenceArrayListExtra("employeeList", employeeList);
+        startActivity(intent);
     }
 
     private void setUpActionBar(){

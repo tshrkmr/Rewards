@@ -20,7 +20,7 @@ public class EmployeeViewHolder extends RecyclerView.ViewHolder {
         employeeName = itemView.findViewById(R.id.employeeNameTextview);
         employeeTitle = itemView.findViewById(R.id.employeeTitleTextview);
         employeePoints = itemView.findViewById(R.id.employeePointsTextview);
-        //employeeImage = itemView.findViewById(R.id.employeeImageview);
+        employeeImage = itemView.findViewById(R.id.employeeImageview);
         listSeparator = itemView.findViewById(R.id.listSeperatorImageview);
 
     }

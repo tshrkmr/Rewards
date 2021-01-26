@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -18,18 +17,16 @@ import java.util.List;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class LoginAPIRunnable implements Runnable{
+public class GetAllProfilesAPIRunnable implements Runnable{
 
-    private String apiValue, userName, password;
-    private MainActivity mainActivity;
-    private static final String TAG = "LoginAPIRunnable";
-    private  List<Reward> rewardList= new ArrayList<>();
+    private final LeaderboardActivity leaderboardActivity;
+    private final String apiValue;
+    private List<Employee> employeeList = new ArrayList<>();
+    private static final String TAG = "GetAllProfilesAPIRunnable";
 
-    public LoginAPIRunnable(String apiValue, String userName, String password, MainActivity mainActivity) {
+    public GetAllProfilesAPIRunnable(LeaderboardActivity leaderboardActivity, String apiValue) {
+        this.leaderboardActivity = leaderboardActivity;
         this.apiValue = apiValue;
-        this.userName = userName;
-        this.password = password;
-        this.mainActivity = mainActivity;
     }
 
     @Override
@@ -38,16 +35,14 @@ public class LoginAPIRunnable implements Runnable{
         BufferedReader reader = null;
 
         try {
-            String urlString = "http://christopherhield.org/api/Profile/Login";
+            String urlString = "http://christopherhield.org/api/Profile/GetAllProfiles";
 
             Uri.Builder buildURL = Uri.parse(urlString).buildUpon();
-            buildURL.appendQueryParameter("userName", userName);
-            buildURL.appendQueryParameter("password", password);
 
             String urlToUse = buildURL.build().toString();
             URL url = new URL(urlToUse);
 
-            Log.d(TAG, "run: " + urlToUse + userName + password);
+            Log.d(TAG, "run: " + urlToUse);
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -96,38 +91,43 @@ public class LoginAPIRunnable implements Runnable{
 
     private void process(String s){
         try {
-            JSONObject jsonObject = new JSONObject(s);
-            String rFirstName = jsonObject.getString("firstName");
-            String rLastName = jsonObject.getString("lastName");
-            String rUserName = jsonObject.getString("userName");
-            String rDepartment = jsonObject.getString("department");
-            String rStory = jsonObject.getString("story");
-            String rPosition = jsonObject.getString("position");
-            String rPassword = jsonObject.getString("password");
-            String rRemainingPointsToReward = jsonObject.getString("remainingPointsToAward");
-            String rLocation = jsonObject.getString("location");
-            String rImageBytes = jsonObject.getString("imageBytes");
-
-            Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rImageBytes);
-            employee.setPassword(rPassword);
-            employee.setRemainingPointsToAward(rRemainingPointsToReward);
-            employee.setLocation(rLocation);
-
-            JSONArray jsonArray = jsonObject.getJSONArray("rewardRecordViews");
-
-            int length =jsonArray.length();
-
-            for(int i =0; i<length; i++) {
-                JSONObject details = jsonArray.getJSONObject(i);
-                String rGivenName = details.getString("givenName");
-                String rAmount = details.getString("amount");
-                String rNote = details.getString("note");
-                String rAwardDate= details.getString("awardDate");
-                Reward reward = new Reward(rGivenName, rAmount, rNote, rAwardDate);
-                rewardList.add(reward);
+            leaderboardActivity.clearEmployeeList();
+            String rFirstName = "", rLastName = "", rUserName = "", rDepartment = "", rStory = "", rPosition = "", rImageBytes = "";
+            JSONArray jEmployeeArray = new JSONArray(s);
+            int employeeLength = jEmployeeArray.length();
+            //Log.d(TAG, "process: employeeLength" + employeeLength);
+            for(int i = 0; i<employeeLength; i++) {
+                JSONObject employeeDetails = jEmployeeArray.getJSONObject(i);
+                rFirstName = employeeDetails.getString("firstName");
+                rLastName = employeeDetails.getString("lastName");
+                rUserName = employeeDetails.getString("userName");
+                rDepartment = employeeDetails.getString("department");
+                rStory = employeeDetails.getString("story");
+                rPosition = employeeDetails.getString("position");
+                rImageBytes = employeeDetails.getString("imageBytes");
+                Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rImageBytes);
+                leaderboardActivity.runOnUiThread(()->leaderboardActivity.updateEmployeeList(employee));
             }
-            employee.setRewardList(rewardList);
-            mainActivity.runOnUiThread(()->mainActivity.setEmployeeDetails(employee));
+
+
+
+
+
+//            JSONArray jsonArray = jsonObject.getJSONArray("rewardRecordViews");
+//
+//            int length =jsonArray.length();
+//
+//            for(int i =0; i<length; i++) {
+//                JSONObject details = jsonArray.getJSONObject(i);
+//                String rGivenName = details.getString("givenName");
+//                String rAmount = details.getString("amount");
+//                String rNote = details.getString("note");
+//                String rAwardDate= details.getString("awardDate");
+//                Reward reward = new Reward(rGivenName, rAmount, rNote, rAwardDate);
+//                rewardList.add(reward);
+//            }
+//            employee.setRewardList(rewardList);
+//            editProfileActivity.runOnUiThread(()->editProfileActivity.profileUpDated(employee));
 
             //Log.d(TAG, "process: " + rFirstName + "" + rLastName);
         }catch(JSONException e){

@@ -205,7 +205,7 @@ public class CreateProfileActivity extends AppCompatActivity {
                 CreateProfileAPIRunnable createProfileAPIRunnable = new CreateProfileAPIRunnable(this, firstName,
                         lastName, userName, departmentName, story, positionTitle, password,"1000", locationValue, imageBytes, apiValue);
                 new Thread(createProfileAPIRunnable).start();
-                progressBar.setVisibility(View.VISIBLE);
+                //progressBar.setVisibility(View.VISIBLE);
             }
         }
         return super.onOptionsItemSelected(item);
