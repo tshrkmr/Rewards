@@ -150,9 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 sID = studentID.getText().toString();
                 if(fName.trim().isEmpty() || lName.trim().isEmpty() || eID.trim().isEmpty() || sID.trim().isEmpty()){
                     apiDataIncorrect(empty);
-                }else if(fName == null || lName == null || eID == null || sID == null){
-                    apiDataIncorrect(nullValue);
-                } else if(!eID.trim().matches(emailPattern)){
+                }else if(!eID.trim().matches(emailPattern)){
                     apiDataIncorrect(incorrectEmail);
                 }else{
                     getApiKey(fName, lName, eID, sID);
@@ -171,18 +169,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void apiDataIncorrect(String issue){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        if(issue.equals(empty)) {
-            builder.setTitle("One or More Fields not Entered");
-            builder.setMessage("Please enter data in all the fields");
-        }else if(issue.equals(incorrectEmail)){
-            builder.setTitle("Incorrect Email");
-            builder.setMessage("Only .edu emails can be accepted");
-        }else if(issue.equals(apiValueNull)){
-            builder.setTitle("API could not be retrieved");
-            builder.setMessage("Please try again later");
-        }else if(issue.equals(nullValue)) {
-            builder.setTitle("One or More Fields Incorrect");
-            builder.setMessage("Null values cannot be accepted");
+        switch (issue) {
+            case empty:
+                builder.setTitle("One or More Fields not Entered");
+                builder.setMessage("Please enter data in all the fields");
+                break;
+            case incorrectEmail:
+                builder.setTitle("Incorrect Email");
+                builder.setMessage("Only .edu emails can be accepted");
+                break;
+            case apiValueNull:
+                builder.setTitle("API could not be retrieved");
+                builder.setMessage("Please try again later");
+                break;
         }
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -269,9 +268,11 @@ public class MainActivity extends AppCompatActivity {
         new Thread(loginAPIRunnable).start();
     }
 
-    public void getEmployeeDetails(Employee employee){
+    public void setEmployeeDetails(Employee employee){
+        String myAPI = sharedPreferences.getString("apiValue", "noAPI");
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("employee", employee);
+        intent.putExtra("apiValue", myAPI);
         startActivity(intent);
     }
 }

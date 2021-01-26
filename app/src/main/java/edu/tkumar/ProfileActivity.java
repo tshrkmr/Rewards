@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private TextView profileName, profileLocation, profilePointsAwarded, profileDepartment, profilePosition, profilePointsToAward, profileStory, profileRewardHistoryTitleTextview;
     private ImageView profileImageView;
     private Bitmap bitmap;
+    private String apiValue;
+    private static final String TAG = "ProfileActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +38,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
         setUpProfileRecyclerview();
 
-        Intent intent = getIntent();
-        employee = (Employee) intent.getSerializableExtra("employee");
+        getIntentData();
 
         convertTextToImage();
 
@@ -49,6 +51,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setUpActionBar();
 
         setUpProfileRecyclerview();
+    }
+
+    private void getIntentData(){
+        Intent intent = getIntent();
+
+        if(intent.hasExtra("apiValue")){
+            apiValue = intent.getStringExtra("apiValue");
+            Log.d(TAG, "getIntentData: " + apiValue);
+        }
+
+        employee = (Employee) intent.getSerializableExtra("employee");
     }
 
     private void initializeFields(){
@@ -103,10 +116,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if(itemID == R.id.delete_menu){
 
         }else if(itemID == R.id.edit_menu){
-
+            openEditActivity();
         }else if(itemID == R.id.show_leaderboard_menu) {
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openEditActivity(){
+        Intent intent = new Intent(this, EditProfileActivity.class);
+        intent.putExtra("employee", employee);
+        intent.putExtra("apiValue", apiValue);
+        startActivity(intent);
     }
 
     @Override

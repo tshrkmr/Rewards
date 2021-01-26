@@ -18,18 +18,26 @@ import java.util.List;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class LoginAPIRunnable implements Runnable{
+public class UpdateProfileAPIRunnable implements Runnable{
 
-    private String apiValue, userName, password;
-    private MainActivity mainActivity;
-    private static final String TAG = "LoginAPIRunnable";
-    private  List<Reward> rewardList= new ArrayList<>();
+    private final EditProfileActivity editProfileActivity;
+    private final String firstName, lastName, userName, department, story, position, password, location, imageBytes, apiValue;
+    private List<Reward> rewardList= new ArrayList<>();
+    private static final String TAG = "UpdateProfileAPIRunnable";
 
-    public LoginAPIRunnable(String apiValue, String userName, String password, MainActivity mainActivity) {
-        this.apiValue = apiValue;
+    public UpdateProfileAPIRunnable(EditProfileActivity editProfileActivity, String firstName, String lastName, String userName, String department, String story,
+                                    String position, String password, String location, String imageBytes, String apiValue) {
+        this.editProfileActivity = editProfileActivity;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.userName = userName;
+        this.department = department;
+        this.story = story;
+        this.position = position;
         this.password = password;
-        this.mainActivity = mainActivity;
+        this.location = location;
+        this.imageBytes = imageBytes;
+        this.apiValue = apiValue;
     }
 
     @Override
@@ -38,24 +46,33 @@ public class LoginAPIRunnable implements Runnable{
         BufferedReader reader = null;
 
         try {
-            String urlString = "http://christopherhield.org/api/Profile/Login";
+            String urlString = "http://christopherhield.org/api/Profile/UpdateProfile";
 
             Uri.Builder buildURL = Uri.parse(urlString).buildUpon();
+            buildURL.appendQueryParameter("firstName", firstName);
+            buildURL.appendQueryParameter("lastName", lastName);
             buildURL.appendQueryParameter("userName", userName);
+            buildURL.appendQueryParameter("department", department);
+            buildURL.appendQueryParameter("story", story);
+            buildURL.appendQueryParameter("position", position);
             buildURL.appendQueryParameter("password", password);
+            buildURL.appendQueryParameter("location", location);
 
             String urlToUse = buildURL.build().toString();
             URL url = new URL(urlToUse);
 
-            Log.d(TAG, "run: " + urlToUse + userName + password);
+            Log.d(TAG, "run: " + urlToUse);
 
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod("PUT");
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("ApiKey", apiValue);
             connection.connect();
 
+            OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
+            out.write(imageBytes);
+            out.close();
 
             int responseCode = connection.getResponseCode();
             Log.d(TAG, "run: response code" + responseCode);
@@ -124,7 +141,7 @@ public class LoginAPIRunnable implements Runnable{
                 rewardList.add(reward);
             }
             employee.setRewardList(rewardList);
-            mainActivity.runOnUiThread(()->mainActivity.setEmployeeDetails(employee));
+            editProfileActivity.runOnUiThread(()->editProfileActivity.profileUpDated(employee));
 
             //Log.d(TAG, "process: " + rFirstName + "" + rLastName);
         }catch(JSONException e){

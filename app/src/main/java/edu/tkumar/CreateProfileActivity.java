@@ -55,7 +55,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         initializeFields();
 
-        setupEditText();
+        setUpStoryEditText();
 
         setUpActionBar();
 
@@ -77,18 +77,18 @@ public class CreateProfileActivity extends AppCompatActivity {
         createUsername = findViewById(R.id.createUsernameEditText);
         createPassword = findViewById(R.id.createPasswordEditText);
         createFirstName = findViewById(R.id.createFirstNameEditText);
-        createLastName = findViewById(R.id.editLastNameEditText);
-        createDepartmentName = findViewById(R.id.editDepartmentNameEditText);
-        createPositionTitle = findViewById(R.id.editPositionTitleEditText);
+        createLastName = findViewById(R.id.createLastNameEditText);
+        createDepartmentName = findViewById(R.id.createDepartmentNameEditText);
+        createPositionTitle = findViewById(R.id.createPositionEditText);
         imageButton = findViewById(R.id.createProfileImageButton);
         createStory = findViewById(R.id.createStoryEditText);
-        textSizeDisplay = findViewById(R.id.createStoryTextview);
-        deleteProfile = findViewById(R.id.deleteprofileEditText);
-        progressBar = findViewById(R.id.createProgressBar);
-        progressBar.setVisibility(View.GONE);
+        textSizeDisplay = findViewById(R.id.createStoryTitleTextview);
+        //deleteProfile = findViewById(R.id.deleteprofileEditText);
+        //progressBar = findViewById(R.id.createProgressBar);
+        //progressBar.setVisibility(View.GONE);
     }
 
-    private void setupEditText() {
+    private void setUpStoryEditText() {
         createStory.setFilters(new InputFilter[] {
                 new InputFilter.LengthFilter(MAX_LEN) // Specifies a max text length
         });
@@ -129,6 +129,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
     public void doGallery(View v) {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
@@ -244,16 +245,17 @@ public class CreateProfileActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void temporaryDelete(View v){
-        tempProfile = deleteProfile.getText().toString();
-        DeleteProfileAPIRunnable deleteProfileAPIRunnable = new DeleteProfileAPIRunnable(tempProfile, apiValue);
-        new Thread(deleteProfileAPIRunnable).start();
-    }
+//    public void temporaryDelete(View v){
+//        tempProfile = deleteProfile.getText().toString();
+//        DeleteProfileAPIRunnable deleteProfileAPIRunnable = new DeleteProfileAPIRunnable(tempProfile, apiValue);
+//        new Thread(deleteProfileAPIRunnable).start();
+//    }
 
     public void profileCreated(Employee employee){
-        progressBar.setVisibility(View.GONE );
+        //progressBar.setVisibility(View.GONE );
         Intent intent= new Intent(this, ProfileActivity.class);
         intent.putExtra("employee", employee);
+        intent.putExtra("apiValue", apiValue);
         startActivity(intent);
     }
 
