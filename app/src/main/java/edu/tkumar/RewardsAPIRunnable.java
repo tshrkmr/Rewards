@@ -97,18 +97,9 @@ public class RewardsAPIRunnable implements Runnable{
 
     private void process(String s){
         try {
-            JSONObject jsonObject = new JSONObject(s);
-            String rReceiverUser = jsonObject.getString("receiverUser");
-            String rGiverUser = jsonObject.getString("GiverUser");
-            String rGiverName = jsonObject.getString("giverName");
-            String rAmount = jsonObject.getString("amount");
-            String rNote = jsonObject.getString("note");
-
             rewardActivity.runOnUiThread(()->rewardActivity.updateLeaderboardActivity());
 
             //Log.d(TAG, "process: " + rFirstName + "" + rLastName);
-        }catch(JSONException e){
-            e.printStackTrace();
         }catch (NullPointerException e){
             return;
         }

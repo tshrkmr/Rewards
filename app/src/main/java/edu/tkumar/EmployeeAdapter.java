@@ -39,7 +39,7 @@ public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeViewHolder> {
         Employee employee = employeeList.get(position);
         holder.employeeName.setText(String.format("%s, %s", employee.getLastName(), employee.getFirstName()));
         holder.employeeTitle.setText(String.format("%s, %s", employee.getPosition(), employee.getDepartment()));
-        holder.employeePoints.setText(employee.getRemainingPointsToAward());
+        holder.employeePoints.setText(String.format("%d", employee.getPointsAwarded()));
 
         byte[] imageBytes = Base64.decode(employee.getImageBytes(), Base64.DEFAULT);
         Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);

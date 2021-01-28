@@ -17,6 +17,7 @@ public class Employee implements Serializable {
     private String remainingPointsToAward;
     private String location;
     private String imageBytes;
+    private int pointsAwarded;
     private Reward reward;
     private List<Reward> rewardList = new ArrayList<>();
     private List<Employee> employeeList = new ArrayList<>();
@@ -30,6 +31,10 @@ public class Employee implements Serializable {
         this.story = story;
         this.position = position;
         this.imageBytes = imageBytes;
+    }
+
+    public void setPointsAwarded(int pointsAwarded) {
+        this.pointsAwarded = pointsAwarded;
     }
 
     public void setFirstName(String firstName) {
@@ -80,6 +85,10 @@ public class Employee implements Serializable {
         this.rewardList = rewardList;
     }
 
+    public int getPointsAwarded() {
+        return pointsAwarded;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -119,6 +128,11 @@ public class Employee implements Serializable {
     public String getImageBytes() {
         return imageBytes;
     }
+
+//    @Override
+//    public int compareTo(Employee employee) {
+//        return pointsAwarded.compareTo(employee.getPointsAwarded());
+//    }
 
     public Reward getReward() {
         return reward;

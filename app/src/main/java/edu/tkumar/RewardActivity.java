@@ -199,6 +199,7 @@ public class RewardActivity extends AppCompatActivity {
 
     public void updateLeaderboardActivity(){
         Intent intent = new Intent(this, LeaderboardActivity.class);
+        intent.putExtra("apiValue", apiValue);
         startActivity(intent);
     }
 }

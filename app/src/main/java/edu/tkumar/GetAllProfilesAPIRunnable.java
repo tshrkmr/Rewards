@@ -106,29 +106,20 @@ public class GetAllProfilesAPIRunnable implements Runnable{
                 rPosition = employeeDetails.getString("position");
                 rImageBytes = employeeDetails.getString("imageBytes");
                 Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rImageBytes);
+
+                JSONArray jsonRewardArray = employeeDetails.getJSONArray("rewardRecordViews");
+
+                int length =jsonRewardArray.length();
+                int pointsAwarded = 0;
+                for(int j =0; j<length; j++) {
+                    JSONObject rewardDetails = jsonRewardArray.getJSONObject(j);
+                    String rAmount = rewardDetails.getString("amount");
+                    pointsAwarded += Integer.parseInt(rAmount);
+                }
+                int finalPointsAwarded = pointsAwarded;
+                employee.setPointsAwarded(finalPointsAwarded);
                 leaderboardActivity.runOnUiThread(()->leaderboardActivity.updateEmployeeList(employee));
             }
-
-
-
-
-
-//            JSONArray jsonArray = jsonObject.getJSONArray("rewardRecordViews");
-//
-//            int length =jsonArray.length();
-//
-//            for(int i =0; i<length; i++) {
-//                JSONObject details = jsonArray.getJSONObject(i);
-//                String rGivenName = details.getString("givenName");
-//                String rAmount = details.getString("amount");
-//                String rNote = details.getString("note");
-//                String rAwardDate= details.getString("awardDate");
-//                Reward reward = new Reward(rGivenName, rAmount, rNote, rAwardDate);
-//                rewardList.add(reward);
-//            }
-//            employee.setRewardList(rewardList);
-//            editProfileActivity.runOnUiThread(()->editProfileActivity.profileUpDated(employee));
-
             //Log.d(TAG, "process: " + rFirstName + "" + rLastName);
         }catch(JSONException e){
             e.printStackTrace();

@@ -10,13 +10,14 @@ import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LeaderboardActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EmployeeAdapter employeeAdapter;
     private RecyclerView recyclerView;
-    private List<Employee> employeeList = new ArrayList<>();
+    private final List<Employee> employeeList = new ArrayList<Employee>();
     private String apiValue;
     private Employee employeeLoggedIn;
     private static final String TAG = "LeaderboardActivity";
@@ -65,6 +66,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
 
     public void updateEmployeeList(Employee employee){
         employeeList.add(employee);
+        //Collections.sort(employeeList);
         employeeAdapter.notifyDataSetChanged();
     }
 
@@ -73,7 +75,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
         employeeAdapter = new EmployeeAdapter(employeeList, this);
         recyclerView.setAdapter(employeeAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //Log.d(TAG, "setUpRecyclerView: employee updated");
+        //Log.d(TAG, "setUpR   ecyclerView: employee updated");
     }
 
     @Override

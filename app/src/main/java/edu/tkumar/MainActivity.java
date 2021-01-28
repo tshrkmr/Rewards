@@ -59,12 +59,12 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         String myUserName = sharedPreferences.getString("loginUserName", "noUserName");
         String myPassword = sharedPreferences.getString("loginPassword", "noPassword");
-        if(myUserName.equals("noUserName"))
-            mainUserName.setText("");
-        else mainUserName.setText(myUserName);
-        if(myPassword.equals("noPassword"))
-            mainPassword.setText("");
-        else mainPassword.setText(myPassword);
+        String checked = sharedPreferences.getString("checked", "false");
+        if(checked.equals("true")) {
+            mainUserName.setText(myUserName);
+            mainPassword.setText(myPassword);
+            checkBox.setChecked(true);
+        }
     }
 
     private void initializeFields(){
@@ -295,9 +295,6 @@ public class MainActivity extends AppCompatActivity {
             showError(empty);
             return;
         }
-//        Intent intent = new Intent(this, ProfileActivity.class);
-//        intent.putExtra("apiValue", myAPI);
-//        startActivity(intent);
         LoginAPIRunnable loginAPIRunnable = new LoginAPIRunnable(myAPI, userName, password, this);
         new Thread(loginAPIRunnable).start();
     }
