@@ -18,8 +18,10 @@ import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 public class RewardDownloaderRunnable implements Runnable{
-    private String apiValue, userName, password;
-    private ProfileActivity profileActivity;
+    private final String apiValue;
+    private final String userName;
+    private final String password;
+    private final ProfileActivity profileActivity;
     private static final String TAG = "LoginAPIRunnable";
 
     public RewardDownloaderRunnable(ProfileActivity profileActivity, String apiValue, String userName, String password) {
@@ -58,7 +60,9 @@ public class RewardDownloaderRunnable implements Runnable{
             Log.d(TAG, "run: response code" + responseCode);
             StringBuilder result = new StringBuilder();
 
+            boolean error;
             if (responseCode == HTTP_OK || responseCode == HTTP_CREATED) {
+                error = false;
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                 String line;
@@ -66,6 +70,7 @@ public class RewardDownloaderRunnable implements Runnable{
                     result.append(line).append("\n");
                 }
             } else {
+                error = true;
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
 
                 String line;
@@ -74,7 +79,7 @@ public class RewardDownloaderRunnable implements Runnable{
                 }
             }
             Log.d(TAG, "run: result rewardDownload  " + result.toString());
-            process(result.toString());
+            process(result.toString(), error);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -91,7 +96,11 @@ public class RewardDownloaderRunnable implements Runnable{
         }
     }
 
-    private void process(String s){
+    private void process(String s, boolean error){
+        if (error) {
+            profileActivity.runOnUiThread(()->profileActivity.showError(s));
+            return;
+        }
         try {
             profileActivity.clearRewardList();
             JSONObject jsonObject = new JSONObject(s);
@@ -101,11 +110,19 @@ public class RewardDownloaderRunnable implements Runnable{
             int length =jsonArray.length();
             int pointsAwarded = 0;
             for(int i =0; i<length; i++) {
+                String rGiverName= "no value returned";
+                String rAmount = "no value returned";
+                String rNote = "no value returned";
+                String rAwardDate = "no value returned";
                 JSONObject details = jsonArray.getJSONObject(i);
-                String rGiverName = details.getString("giverName");
-                String rAmount = details.getString("amount");
-                String rNote = details.getString("note");
-                String rAwardDate= details.getString("awardDate");
+                if(details.has("giverName"))
+                    rGiverName = details.getString("giverName");
+                if(details.has("amount"))
+                    rAmount = details.getString("amount");
+                if(details.has("note"))
+                    rNote = details.getString("note");
+                if(details.has("awardDate"))
+                    rAwardDate= details.getString("awardDate");
                 Reward reward = new Reward(rGiverName, rAmount, rNote, rAwardDate);
                 pointsAwarded += Integer.parseInt(rAmount);
 

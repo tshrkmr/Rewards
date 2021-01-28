@@ -8,7 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -20,11 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Locale;
+import java.util.Objects;
+
 
 public class RewardActivity extends AppCompatActivity {
 
@@ -35,6 +35,7 @@ public class RewardActivity extends AppCompatActivity {
     private String empty = "empty", noImage = "noImage";
     private static final String TAG = "RewardActivity";
     private Employee employeeLoggedIn, employeeSelected;
+    private ProgressBar progressBar;
     private ImageView imageView;
 
     @Override
@@ -77,12 +78,13 @@ public class RewardActivity extends AppCompatActivity {
        rewardPointsToSend = findViewById(R.id.rewardPointsToSendEditText);
        rewardComment = findViewById(R.id.rewardCommentEditText);
        imageView = findViewById(R.id.rewardImageView);
+       progressBar = findViewById(R.id.rewardProgressBar);
         //rewardPointsAwardedTitle, rewardDepartmentTitle, rewardPositionTitle;
     }
 
     private void enterFieldData(){
         rewardName.setText(String.format("%s, %s", employeeSelected.getLastName(), employeeSelected.getFirstName()));
-        rewardPointsAwarded.setText(employeeSelected.getRemainingPointsToAward());
+        rewardPointsAwarded.setText(String.format("%d", employeeSelected.getPointsAwarded()));
         rewardDepartment.setText(employeeSelected.getDepartment());
         rewardPosition.setText(employeeSelected.getPosition());
         rewardStory.setText(employeeSelected.getStory());
@@ -154,6 +156,7 @@ public class RewardActivity extends AppCompatActivity {
     }
 
     private void addRewards(){
+        progressBar.setVisibility(View.INVISIBLE);
         String giverName = employeeLoggedIn.getFirstName() + " " + employeeLoggedIn.getLastName();
         RewardsAPIRunnable rewardsAPIRunnable = new RewardsAPIRunnable(this, apiValue, employeeSelected.getUsername(),
                 employeeLoggedIn.getUsername(), giverName, pointsToSend, comment);
@@ -182,7 +185,7 @@ public class RewardActivity extends AppCompatActivity {
     }
 
     private void setUpActionBar(){
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.icon);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setTitle(String.format("%s %s",employeeSelected.getFirstName(), employeeSelected.getLastName()));
@@ -198,8 +201,39 @@ public class RewardActivity extends AppCompatActivity {
     }
 
     public void updateLeaderboardActivity(){
+        progressBar.setVisibility(View.INVISIBLE);
         Intent intent = new Intent(this, LeaderboardActivity.class);
         intent.putExtra("apiValue", apiValue);
         startActivity(intent);
+    }
+
+    public void showError(String s){
+        progressBar.setVisibility(View.INVISIBLE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Action Failed");
+        builder.setMessage(s);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void updateGiverPointsLeft(String amount){
+        String remainPointsToAward = employeeLoggedIn.getRemainingPointsToAward();
+        int points = Integer.parseInt(remainPointsToAward);
+        int pointsDecreased = Integer.parseInt(amount);
+        int result = points - pointsDecreased;
+        String newPoints = Integer.toString(result);
+        employeeLoggedIn.setRemainingPointsToAward(newPoints);
     }
 }

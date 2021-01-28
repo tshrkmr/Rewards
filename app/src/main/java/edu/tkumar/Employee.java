@@ -1,7 +1,5 @@
 package edu.tkumar;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,7 @@ public class Employee implements Serializable {
     private String remainingPointsToAward;
     private String location;
     private String imageBytes;
+    private String loggedInUserName;
     private int pointsAwarded;
     private Reward reward;
     private List<Reward> rewardList = new ArrayList<>();
@@ -77,12 +76,8 @@ public class Employee implements Serializable {
         this.imageBytes = imageBytes;
     }
 
-    public void setReward(Reward reward) {
-        this.reward = reward;
-    }
-
-    public void setRewardList(List<Reward> rewardList) {
-        this.rewardList = rewardList;
+    public void setLoggedInUserName(String name){
+        this.loggedInUserName = name;
     }
 
     public int getPointsAwarded() {
@@ -129,17 +124,8 @@ public class Employee implements Serializable {
         return imageBytes;
     }
 
-//    @Override
-//    public int compareTo(Employee employee) {
-//        return pointsAwarded.compareTo(employee.getPointsAwarded());
-//    }
-
-    public Reward getReward() {
-        return reward;
-    }
-
-    public List<Reward> getRewardList() {
-        return rewardList;
+    public String getLoggedInUserName(){
+        return loggedInUserName;
     }
 
     @Override

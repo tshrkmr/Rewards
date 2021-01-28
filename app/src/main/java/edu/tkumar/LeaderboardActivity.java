@@ -1,38 +1,36 @@
 package edu.tkumar;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class LeaderboardActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EmployeeAdapter employeeAdapter;
     private RecyclerView recyclerView;
-    private final List<Employee> employeeList = new ArrayList<Employee>();
+    private final List<Employee> employeeList = new ArrayList<>();
     private String apiValue;
     private Employee employeeLoggedIn;
+    private ProgressBar progressBar;
     private static final String TAG = "LeaderboardActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
-
-
-//        for(int i = 0;i<10;i++){
-//            Employee employee = new Employee("employee", "shipping", "CEO", "1000", "HI");
-//            employeeList.add(employee);
-//            //Log.d(TAG, "onCreate: employee updated");
-//        }
 
         setUpLeaderboardRecyclerView();
 
@@ -44,6 +42,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void downloadData(){
+        progressBar.setVisibility(View.VISIBLE);
         GetAllProfilesAPIRunnable getAllProfilesAPIRunnable = new GetAllProfilesAPIRunnable(this, apiValue);
         new Thread(getAllProfilesAPIRunnable).start();
     }
@@ -65,6 +64,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
     }
 
     public void updateEmployeeList(Employee employee){
+        progressBar.setVisibility(View.INVISIBLE);
         employeeList.add(employee);
         //Collections.sort(employeeList);
         employeeAdapter.notifyDataSetChanged();
@@ -75,6 +75,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
         employeeAdapter = new EmployeeAdapter(employeeList, this);
         recyclerView.setAdapter(employeeAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        progressBar = findViewById(R.id.leaderboardProgressBar);
         //Log.d(TAG, "setUpR   ecyclerView: employee updated");
     }
 
@@ -89,9 +90,30 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void setUpActionBar(){
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.icon);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setTitle("Leaderboard");
+    }
+
+    public void showError(String s){
+        progressBar.setVisibility(View.INVISIBLE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Download Failed");
+        builder.setMessage(s);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

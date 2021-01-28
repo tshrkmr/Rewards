@@ -12,16 +12,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
+import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 public class GetAllProfilesAPIRunnable implements Runnable{
 
     private final LeaderboardActivity leaderboardActivity;
     private final String apiValue;
-    private List<Employee> employeeList = new ArrayList<>();
     private static final String TAG = "GetAllProfilesAPIRunnable";
 
     public GetAllProfilesAPIRunnable(LeaderboardActivity leaderboardActivity, String apiValue) {
@@ -56,7 +54,9 @@ public class GetAllProfilesAPIRunnable implements Runnable{
             Log.d(TAG, "run: response code" + responseCode);
             StringBuilder result = new StringBuilder();
 
-            if (responseCode == HTTP_OK) {
+            boolean error;
+            if (responseCode == HTTP_OK || responseCode == HTTP_CREATED) {
+                error = false;
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                 String line;
@@ -64,6 +64,7 @@ public class GetAllProfilesAPIRunnable implements Runnable{
                     result.append(line).append("\n");
                 }
             } else {
+                error = true;
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
 
                 String line;
@@ -72,7 +73,7 @@ public class GetAllProfilesAPIRunnable implements Runnable{
                 }
             }
             Log.d(TAG, "run: result " + result.toString());
-            process(result.toString());
+            process(result.toString(), error);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -89,22 +90,40 @@ public class GetAllProfilesAPIRunnable implements Runnable{
         }
     }
 
-    private void process(String s){
+    private void process(String s, boolean error){
+        if (error) {
+            leaderboardActivity.runOnUiThread(() -> leaderboardActivity.showError(s));
+            return;
+        }
         try {
             leaderboardActivity.clearEmployeeList();
-            String rFirstName = "", rLastName = "", rUserName = "", rDepartment = "", rStory = "", rPosition = "", rImageBytes = "";
+
             JSONArray jEmployeeArray = new JSONArray(s);
             int employeeLength = jEmployeeArray.length();
             //Log.d(TAG, "process: employeeLength" + employeeLength);
             for(int i = 0; i<employeeLength; i++) {
+                String rFirstName = "no value returned";
+                String rLastName = "no value returned";
+                String rUserName = "no value returned";
+                String rDepartment = "no value returned";
+                String rStory = "no value returned";
+                String rPosition = "no value returned";
+                String rImageBytes = "no value returned";
                 JSONObject employeeDetails = jEmployeeArray.getJSONObject(i);
-                rFirstName = employeeDetails.getString("firstName");
-                rLastName = employeeDetails.getString("lastName");
-                rUserName = employeeDetails.getString("userName");
-                rDepartment = employeeDetails.getString("department");
-                rStory = employeeDetails.getString("story");
-                rPosition = employeeDetails.getString("position");
-                rImageBytes = employeeDetails.getString("imageBytes");
+                if(employeeDetails.has("firstName"))
+                    rFirstName = employeeDetails.getString("firstName");
+                if(employeeDetails.has("lastName"))
+                    rLastName = employeeDetails.getString("lastName");
+                if(employeeDetails.has("userName"))
+                    rUserName = employeeDetails.getString("userName");
+                if(employeeDetails.has("department"))
+                    rDepartment = employeeDetails.getString("department");
+                if(employeeDetails.has("story"))
+                    rStory = employeeDetails.getString("story");
+                if(employeeDetails.has("position"))
+                    rPosition = employeeDetails.getString("position");
+                if(employeeDetails.has("imageBytes"))
+                    rImageBytes = employeeDetails.getString("imageBytes");
                 Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rImageBytes);
 
                 JSONArray jsonRewardArray = employeeDetails.getJSONArray("rewardRecordViews");
@@ -112,8 +131,10 @@ public class GetAllProfilesAPIRunnable implements Runnable{
                 int length =jsonRewardArray.length();
                 int pointsAwarded = 0;
                 for(int j =0; j<length; j++) {
+                    String rAmount = "0";
                     JSONObject rewardDetails = jsonRewardArray.getJSONObject(j);
-                    String rAmount = rewardDetails.getString("amount");
+                    if(rewardDetails.has("amount"))
+                        rAmount = rewardDetails.getString("amount");
                     pointsAwarded += Integer.parseInt(rAmount);
                 }
                 int finalPointsAwarded = pointsAwarded;

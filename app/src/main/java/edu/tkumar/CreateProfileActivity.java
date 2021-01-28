@@ -19,6 +19,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,30 +30,28 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class CreateProfileActivity extends AppCompatActivity {
 
     private EditText createStory, createUsername, createPassword, createFirstName, createLastName, createDepartmentName, createPositionTitle;
     private String story, userName, password, firstName, lastName, departmentName, positionTitle;
-    private ProgressBar progressBar;
     private final String empty = "empty", noImage = "noImage", noPermission = "noPermission";
     private TextView textSizeDisplay;
     private ImageButton imageButton;
     private static final int MAX_LEN = 360;
     private final int REQUEST_IMAGE_CAPTURE_THUMB = 3;
     private final int REQUEST_IMAGE_GALLERY = 1;
-    private String locationValue = "", apiValue = "";
+    private static String locationString = "Unspecified Location";
+    private String apiValue = "";
     private String imageBytes = "";
     private static final int READ_STORAGE_REQUEST = 112;
     private static final String TAG = "CreateProfileActivity";
-    private View view;
-
-
-    //Temporary
-    private EditText deleteProfile;
-    private String tempProfile;
+    private Bitmap bitmap, newBitmap;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +72,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         if(intent.hasExtra("location")){
-            locationValue = intent.getStringExtra("location");
+            locationString = intent.getStringExtra("location");
         }
         if(intent.hasExtra("apiValue")){
             apiValue = intent.getStringExtra("apiValue");
@@ -91,6 +90,9 @@ public class CreateProfileActivity extends AppCompatActivity {
         imageButton = findViewById(R.id.createProfileImageButton);
         createStory = findViewById(R.id.createStoryEditText);
         textSizeDisplay = findViewById(R.id.createStoryTitleTextview);
+        progressBar = findViewById(R.id.createProgressBar);
+        BitmapDrawable drawable = (BitmapDrawable) imageButton.getDrawable();
+        bitmap = drawable.getBitmap();
         //progressBar.setVisibility(View.GONE);
     }
 
@@ -205,7 +207,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     private void processCameraThumb(Bundle extras) {
         Bitmap imageBitmap = (Bitmap) extras.get("data");
         imageButton.setImageBitmap(imageBitmap);
-        imageToBase64();
+        //imageToBase64();
     }
 
     private void processGallery(Intent data) {
@@ -222,7 +224,7 @@ public class CreateProfileActivity extends AppCompatActivity {
 
         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
         imageButton.setImageBitmap(selectedImage);
-        imageToBase64();
+        //imageToBase64();
     }
 
     @Override
@@ -236,7 +238,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         int itemID = item.getItemId();
         if(itemID == R.id.save_menu){
             getFieldData();
-            if(imageBytes.equals("")){
+            if(bitmap == newBitmap){
                 profileDataIncorrect(noImage);
             }else if( userName.trim().isEmpty() || password.trim().isEmpty() || firstName.trim().isEmpty() || lastName.trim().isEmpty()
                     || departmentName.trim().isEmpty() || positionTitle.trim().isEmpty() || story.trim().isEmpty()){
@@ -264,8 +266,9 @@ public class CreateProfileActivity extends AppCompatActivity {
     }
 
     private void createProfile(){
+        progressBar.setVisibility(View.VISIBLE);
         CreateProfileAPIRunnable createProfileAPIRunnable = new CreateProfileAPIRunnable(this, firstName,
-                lastName, userName, departmentName, story, positionTitle, password,"1000", locationValue, imageBytes, apiValue);
+                lastName, userName, departmentName, story, positionTitle, password,"1000", locationString, imageBytes, apiValue);
         new Thread(createProfileAPIRunnable).start();
     }
 
@@ -277,25 +280,41 @@ public class CreateProfileActivity extends AppCompatActivity {
         departmentName = createDepartmentName.getText().toString();
         positionTitle = createPositionTitle.getText().toString();
         story = createStory.getText().toString();
+        BitmapDrawable drawable = (BitmapDrawable) imageButton.getDrawable();
+        newBitmap = drawable.getBitmap();
+        imageToBase64();
     }
 
-    private void imageToBase64(){
-        BitmapDrawable drawable = (BitmapDrawable) imageButton.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        ImageToText imageToText = new ImageToText(bitmap);
-        imageBytes = imageToText.toBase64();
-        Log.d(TAG, "imageToBase64: " + imageBytes);
+    private void imageToBase64() {
+        ByteArrayOutputStream byteArrayOutputStream;
+        int value = 50;
+        while (value > 0) {
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            newBitmap.compress(Bitmap.CompressFormat.PNG, value, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            imageBytes= Base64.encodeToString(byteArray, Base64.DEFAULT);
+            if (imageBytes.length() > 100000) {
+                value -= 10;
+            }else{
+                break;
+            }
+        }
+        Log.d(TAG, "imageToBase64: " + imageBytes.length());
     }
 
     private void profileDataIncorrect(String issue){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("One or More Fields Incorrect");
-        if(issue.equals(empty)) {
-            builder.setMessage("Please enter data in all the fields");
-        } else if(issue.equals(noImage)) {
-            builder.setMessage("Please select an image");
-        }else if(issue.equals(noPermission)){
-            builder.setMessage("Please grant permission in Settings");
+        switch (issue) {
+            case empty:
+                builder.setMessage("Please enter data in all the fields");
+                break;
+            case noImage:
+                builder.setMessage("Please select an image");
+                break;
+            case noPermission:
+                builder.setMessage("Please grant permission in Settings");
+                break;
         }
         builder.setPositiveButton("OK", (dialog, which) -> {
         });
@@ -303,22 +322,24 @@ public class CreateProfileActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void profileCreated(Employee employee){
-        //progressBar.setVisibility(View.GONE );
+    public void profileCreated(Employee employee1){
+        progressBar.setVisibility(View.INVISIBLE);
         Intent intent= new Intent(this, ProfileActivity.class);
-        intent.putExtra("employee", employee);
+        intent.putExtra("employeeLoggedIn", employee1);
         intent.putExtra("apiValue", apiValue);
+        intent.putExtra("location", employee1.getLocation());
         startActivity(intent);
     }
 
     private void setUpActionBar(){
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.icon);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setTitle("Create Profile");
     }
 
     public void showError(String s){
+        progressBar.setVisibility(View.INVISIBLE);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Creation Failed");
         builder.setMessage(s);

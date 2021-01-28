@@ -15,15 +15,18 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -39,10 +42,12 @@ public class EditProfileActivity extends AppCompatActivity {
     private static final int MAX_LEN = 360;
     private final int REQUEST_IMAGE_CAPTURE_THUMB = 3;
     private final int REQUEST_IMAGE_GALLERY = 1;
-    private String locationValue = "", apiValue = "";
+    private String apiValue = "";
     private String imageBytes = "";
-    private Employee employee;
+    private Employee employeeLoggedIn;
     private Bitmap bitmap;
+    private ProgressBar progressBar;
+    private static String locationString = "Unspecified Location";
     private static final String TAG = "EditProfileActivity";
 
     @Override
@@ -73,16 +78,17 @@ public class EditProfileActivity extends AppCompatActivity {
         imageButton = findViewById(R.id.editProfileImageButton);
         editStory = findViewById(R.id.editStoryEditText);
         textSizeDisplay = findViewById(R.id.editStoryTitleTextView);
+        progressBar = findViewById(R.id.editProgressBar);
     }
 
     private void setOriginalDetails(){
-        editUserName.setText(employee.getUsername());
-        editFirstName.setText(employee.getFirstName());
-        editLastName.setText(employee.getLastName());
-        editDepartmentName.setText(employee.getDepartment());
-        editPosition.setText(employee.getPosition());
+        editUserName.setText(employeeLoggedIn.getUsername());
+        editFirstName.setText(employeeLoggedIn.getFirstName());
+        editLastName.setText(employeeLoggedIn.getLastName());
+        editDepartmentName.setText(employeeLoggedIn.getDepartment());
+        editPosition.setText(employeeLoggedIn.getPosition());
         imageButton.setImageBitmap(bitmap);
-        editStory.setText(employee.getStory());
+        editStory.setText(employeeLoggedIn.getStory());
     }
 
     private void setUpStoryEditText() {
@@ -122,7 +128,12 @@ public class EditProfileActivity extends AppCompatActivity {
             apiValue = intent.getStringExtra("apiValue");
             Log.d(TAG, "getIntentData: " + apiValue);
         }
-        employee = (Employee) intent.getSerializableExtra("employeeLoggedIn");
+
+        if(intent.hasExtra("location")){
+            locationString = intent.getStringExtra("location");
+        }
+
+        employeeLoggedIn = (Employee) intent.getSerializableExtra("employeeLoggedIn");
     }
 
     public void GalleryOrCamera(View v){
@@ -177,7 +188,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private void processCameraThumb(Bundle extras) {
         Bitmap imageBitmap = (Bitmap) extras.get("data");
         imageButton.setImageBitmap(imageBitmap);
-        imageToBase64();
+        //imageToBase64();
     }
 
     private void processGallery(Intent data) {
@@ -194,15 +205,24 @@ public class EditProfileActivity extends AppCompatActivity {
 
         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
         imageButton.setImageBitmap(selectedImage);
-        imageToBase64();
+        //imageToBase64();
     }
 
     private void imageToBase64(){
-        BitmapDrawable drawable = (BitmapDrawable) imageButton.getDrawable();
-        Bitmap bitmap = drawable.getBitmap();
-        ImageToText imageToText = new ImageToText(bitmap);
-        imageBytes = imageToText.toBase64();
-        Log.d(TAG, "imageToBase64: " + imageBytes);
+        ByteArrayOutputStream byteArrayOutputStream;
+        int value = 50;
+        while (value > 0) {
+            byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, value, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+            imageBytes= Base64.encodeToString(byteArray, Base64.DEFAULT);
+            if (imageBytes.length() > 100000) {
+                value -= 10;
+            }else{
+                break;
+            }
+        }
+        Log.d(TAG, "imageToBase64: " + imageBytes.length());
     }
 
     @Override
@@ -210,9 +230,7 @@ public class EditProfileActivity extends AppCompatActivity {
         int itemID = item.getItemId();
         if(itemID == R.id.save_menu){
             getFieldData();
-            if(imageBytes.equals("")){
-                profileDataIncorrect(noImage);
-            }else if(password.trim().isEmpty() || firstName.trim().isEmpty() || lastName.trim().isEmpty()
+            if(password.trim().isEmpty() || firstName.trim().isEmpty() || lastName.trim().isEmpty()
                     || departmentName.trim().isEmpty() || position.trim().isEmpty() || story.trim().isEmpty()){
                 profileDataIncorrect(empty);
             }else {
@@ -236,8 +254,9 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void updateProfile(){
+        progressBar.setVisibility(View.VISIBLE);
         UpdateProfileAPIRunnable updateProfileAPIRunnable = new UpdateProfileAPIRunnable(this, firstName, lastName,
-                userName, departmentName, story, position, password, "Chicago", imageBytes, apiValue);
+                userName, departmentName, story, position, password, locationString, imageBytes, apiValue);
         new Thread(updateProfileAPIRunnable).start();
     }
 
@@ -249,6 +268,9 @@ public class EditProfileActivity extends AppCompatActivity {
         position = editPosition.getText().toString();
         story = editStory.getText().toString();
         userName = editUserName.getText().toString();
+        BitmapDrawable drawable = (BitmapDrawable) imageButton.getDrawable();
+        bitmap = drawable.getBitmap();
+        imageToBase64();
     }
 
     private void profileDataIncorrect(String issue){
@@ -268,15 +290,15 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void convertTextToImage(){
-        imageBytes = employee.getImageBytes();
+        imageBytes = employeeLoggedIn.getImageBytes();
         TextToImage textToImage = new TextToImage(imageBytes);
         bitmap = textToImage.textToImage();
     }
 
-    public void profileUpDated(Employee employee){
-        //progressBar.setVisibility(View.GONE );
+    public void profileUpDated(Employee employee1){
+        progressBar.setVisibility(View.INVISIBLE);
         Intent intent= new Intent(this, ProfileActivity.class);
-        intent.putExtra("employee", employee);
+        intent.putExtra("employeeLoggedIn", employee1);
         intent.putExtra("apiValue", apiValue);
         startActivity(intent);
     }
@@ -286,5 +308,26 @@ public class EditProfileActivity extends AppCompatActivity {
         getSupportActionBar().setLogo(R.drawable.icon);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setTitle("Edit Profile");
+    }
+
+    public void showError(String s){
+        progressBar.setVisibility(View.INVISIBLE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Action Failed");
+        builder.setMessage(s);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

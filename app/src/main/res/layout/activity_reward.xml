@@ -70,17 +70,19 @@
         android:id="@+id/rewardStoryTitleTextview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="@string/your_story"
         android:textAlignment="viewStart"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/rewardImageView"
-        app:layout_constraintTop_toBottomOf="@+id/rewardPositionTextview" />
+        app:layout_constraintTop_toBottomOf="@+id/rewardImageView" />
 
     <TextView
         android:id="@+id/rewardStoryTextview"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
+        android:background="@color/grey"
+        android:inputType="text"
+        android:scrollbars="vertical"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/rewardPositionTextview"
         app:layout_constraintStart_toStartOf="@+id/rewardStoryTitleTextview"
@@ -181,4 +183,16 @@
         app:layout_constraintEnd_toEndOf="@+id/rewardDepartmentTextview"
         app:layout_constraintStart_toStartOf="@+id/rewardDepartmentTextview"
         app:layout_constraintTop_toBottomOf="@+id/rewardDepartmentTextview" />
+
+    <ProgressBar
+        android:id="@+id/rewardProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:indeterminateTint="#F66D00"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,10 +21,11 @@ import static java.net.HttpURLConnection.HTTP_OK;
 
 public class LoginAPIRunnable implements Runnable{
 
-    private String apiValue, userName, password;
-    private MainActivity mainActivity;
+    private final String apiValue;
+    private final String userName;
+    private final String password;
+    private final MainActivity mainActivity;
     private static final String TAG = "LoginAPIRunnable";
-    private  List<Reward> rewardList= new ArrayList<>();
 
     public LoginAPIRunnable(String apiValue, String userName, String password, MainActivity mainActivity) {
         this.apiValue = apiValue;
@@ -62,7 +63,9 @@ public class LoginAPIRunnable implements Runnable{
             Log.d(TAG, "run: response code" + responseCode);
             StringBuilder result = new StringBuilder();
 
+            boolean error;
             if (responseCode == HTTP_OK || responseCode == HTTP_CREATED) {
+                error = false;
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                 String line;
@@ -70,6 +73,7 @@ public class LoginAPIRunnable implements Runnable{
                     result.append(line).append("\n");
                 }
             } else {
+                error = true;
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
 
                 String line;
@@ -78,7 +82,7 @@ public class LoginAPIRunnable implements Runnable{
                 }
             }
             Log.d(TAG, "run: result " + result.toString());
-            process(result.toString());
+            process(result.toString(), error);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -95,19 +99,43 @@ public class LoginAPIRunnable implements Runnable{
         }
     }
 
-    private void process(String s){
+    private void process(String s, boolean error){
+        if (error) {
+            mainActivity.runOnUiThread(()->mainActivity.showError1(s));
+            return;
+        }
         try {
+            String rFirstName = "no value returned";
+            String rLastName = "no value returned";
+            String rUserName = "no value returned";
+            String rDepartment = "no value returned";
+            String rStory = "no value returned";
+            String rPosition = "no value returned";
+            String rPassword = "no value returned";
+            String rRemainingPointsToReward = "no value returned";
+            String rLocation = "no value returned";
+            String rImageBytes = "no value returned";
             JSONObject jsonObject = new JSONObject(s);
-            String rFirstName = jsonObject.getString("firstName");
-            String rLastName = jsonObject.getString("lastName");
-            String rUserName = jsonObject.getString("userName");
-            String rDepartment = jsonObject.getString("department");
-            String rStory = jsonObject.getString("story");
-            String rPosition = jsonObject.getString("position");
-            String rPassword = jsonObject.getString("password");
-            String rRemainingPointsToReward = jsonObject.getString("remainingPointsToAward");
-            String rLocation = jsonObject.getString("location");
-            String rImageBytes = jsonObject.getString("imageBytes");
+            if(jsonObject.has("firstName"))
+                rFirstName = jsonObject.getString("firstName");
+            if(jsonObject.has("lastName"))
+                rLastName = jsonObject.getString("lastName");
+            if(jsonObject.has("userName"))
+                rUserName = jsonObject.getString("userName");
+            if(jsonObject.has("department"))
+                rDepartment = jsonObject.getString("department");
+            if(jsonObject.has("story"))
+                rStory = jsonObject.getString("story");
+            if(jsonObject.has("position"))
+                rPosition = jsonObject.getString("position");
+            if(jsonObject.has("password"))
+                rPassword = jsonObject.getString("password");
+            if(jsonObject.has("remainingPointsToAward"))
+                rRemainingPointsToReward = jsonObject.getString("remainingPointsToAward");
+            if(jsonObject.has("location"))
+                rLocation = jsonObject.getString("location");
+            if(jsonObject.has("imageBytes"))
+                rImageBytes = jsonObject.getString("imageBytes");
 
             Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rImageBytes);
             employee.setPassword(rPassword);

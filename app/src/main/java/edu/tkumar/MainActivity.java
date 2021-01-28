@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.google.android.gms.location.LocationServices;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,18 +43,33 @@ public class MainActivity extends AppCompatActivity {
     private FusedLocationProviderClient mFusedLocationClient;
     private static final int LOCATION_REQUEST = 111;
     private CheckBox checkBox;
-
+    private ProgressBar progressBar;
+    private String deleted = "0";
     private static String locationString = "Unspecified Location";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        checkSharedPreferences();
         initializeFields();
+        getIntentData();
+        checkSharedPreferences();
         findLocation();
         enterSavedDetails();
+    }
+
+    private void getIntentData(){
+        Intent intent = getIntent();
+
+        if(intent.hasExtra("deleted")){
+            deleted = intent.getStringExtra("deleted");
+        }
+        if(deleted.equals("1")){
+            sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+            prefsEditor.putString("checked", "false");
+            prefsEditor.apply();
+        }
     }
 
     private void enterSavedDetails(){
@@ -65,12 +82,18 @@ public class MainActivity extends AppCompatActivity {
             mainPassword.setText(myPassword);
             checkBox.setChecked(true);
         }
+        if(checked.equals("false")) {
+            mainUserName.setText("");
+            mainPassword.setText("");
+            checkBox.setChecked(false);
+        }
     }
 
     private void initializeFields(){
         mainUserName = findViewById(R.id.mainUsernameEditText);
         mainPassword = findViewById(R.id.mainPasswordEditText);
         checkBox = findViewById(R.id.mainRememberCredentialsCheckbox);
+        progressBar = findViewById(R.id.mainProgressBar);
     }
 
     private void findLocation(){
@@ -145,12 +168,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkSharedPreferences(){
-        //setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         String myAPI = sharedPreferences.getString("apiValue", "noAPI");
-        String checked = sharedPreferences.getString("checked", "false");
-//        if(checked.equals("true"))
-//            checkBox.setChecked(true);
         if(myAPI.equals("noAPI")) {
             createApiNeededDialog();
         }
@@ -197,7 +216,8 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void showError(String issue){
+    public void showError(String issue){
+        progressBar.setVisibility(View.GONE);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         switch (issue) {
             case empty:
@@ -212,6 +232,9 @@ public class MainActivity extends AppCompatActivity {
                 builder.setTitle("API could not be retrieved");
                 builder.setMessage("Please try again later");
                 break;
+            default:
+                builder.setTitle("Download Failed");
+                builder.setMessage(issue);
         }
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -223,21 +246,37 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    public void showError1(String issue){
+        progressBar.setVisibility(View.GONE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Download Failed");
+        builder.setMessage(issue);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     private void getApiKey(String firstName, String lastName, String emailID, String studentID){
+        progressBar.setVisibility(View.VISIBLE);
         GetStudentApiKeyRunnable getStudentApiKeyRunnable = new GetStudentApiKeyRunnable(this, firstName, lastName, emailID, studentID);
         new Thread(getStudentApiKeyRunnable).start();
     }
 
-    public void saveApiKey(String api){
-        if(api!=null){
+    public void saveApiKey(String apiValue){
+        progressBar.setVisibility(View.GONE);
+        if(apiValue!=null || !Objects.equals(apiValue, "no value returned")){
             SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
-            prefsEditor.putString("apiValue", api);
+            prefsEditor.putString("apiValue", apiValue);
             prefsEditor.apply();
-            createApiStoredDialog(api);
+            createApiStoredDialog(apiValue);
         }else {
             showError(apiValueNull);
         }
-
     }
 
     public void createApiStoredDialog(String api){
@@ -269,6 +308,9 @@ public class MainActivity extends AppCompatActivity {
         editor.clear();
         editor.apply();
         Toast.makeText(MainActivity.this, "API Cleared", Toast.LENGTH_LONG).show();
+        mainUserName.setText("");
+        mainPassword.setText("");
+        checkBox.setChecked(false);
     }
 
     public void createProfile(View v){
@@ -295,18 +337,22 @@ public class MainActivity extends AppCompatActivity {
             showError(empty);
             return;
         }
+        progressBar.setVisibility(View.VISIBLE);
         LoginAPIRunnable loginAPIRunnable = new LoginAPIRunnable(myAPI, userName, password, this);
         new Thread(loginAPIRunnable).start();
     }
 
     public void setEmployeeDetails(Employee employee){
+        //employee.setLoggedInUserName(employee.getUsername());
+        progressBar.setVisibility(View.GONE);
         if(checkBox.isChecked()){
             SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
             prefsEditor.putString("loginUserName", employee.getUsername());
             prefsEditor.putString("loginPassword", employee.getPassword());
             prefsEditor.putString("checked", "true");
             prefsEditor.apply();
-        }else if(!checkBox.isChecked()){
+        }
+        else if(!checkBox.isChecked()){
             SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
             prefsEditor.remove("loginUserName");
             prefsEditor.remove("loginPassword");
@@ -317,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ProfileActivity.class);
         intent.putExtra("employeeLoggedIn", employee);
         intent.putExtra("apiValue", myAPI);
+        intent.putExtra("location", employee.getLocation());
         startActivity(intent);
     }
-
 }

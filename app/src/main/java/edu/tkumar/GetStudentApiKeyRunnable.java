@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
 public class GetStudentApiKeyRunnable implements  Runnable{
@@ -20,6 +20,7 @@ public class GetStudentApiKeyRunnable implements  Runnable{
     private final MainActivity mainActivity;
     private final String firstName, lastName, emailID, studentID;
     private static final String base_url = "http://christopherhield.org/api/Profile/GetStudentApiKey";
+    private boolean error = false;
     private static final String TAG = "GetStudentApiKeyRunnable";
 
 
@@ -58,11 +59,8 @@ public class GetStudentApiKeyRunnable implements  Runnable{
 
             int responseCode = connection.getResponseCode();
 
-            if(responseCode == HTTP_BAD_REQUEST){
-                Log.d(TAG, "run: Bad Request");
-            }
-
-            if (responseCode == HTTP_OK) {
+            if (responseCode == HTTP_OK || responseCode == HTTP_CREATED) {
+                error = false;
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                 String line;
@@ -70,6 +68,7 @@ public class GetStudentApiKeyRunnable implements  Runnable{
                     result.append(line).append("\n");
                 }
             } else {
+                error = true;
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
 
                 String line;
@@ -93,15 +92,24 @@ public class GetStudentApiKeyRunnable implements  Runnable{
                 }
             }
         }
-        process(result.toString());
+        process(result.toString(), error);
     }
 
-    private void process(String s){
+    private void process(String s, boolean error){
+        if (error) {
+            mainActivity.runOnUiThread(()->mainActivity.showError(s));
+            return;
+        }
         try {
+            String email = "no value returned";
+            String apiKey = "no value returned";
             JSONObject jsonObject = new JSONObject(s);
-            String email = jsonObject.getString("email");
-            String apiKey = jsonObject.getString("apiKey");
-            mainActivity.runOnUiThread(()->mainActivity.saveApiKey(apiKey));
+            if(jsonObject.has("email"))
+                email = jsonObject.getString("email");
+            if(jsonObject.has("apiKey"))
+                apiKey = jsonObject.getString("apiKey");
+            String apiValue = apiKey;
+            mainActivity.runOnUiThread(()->mainActivity.saveApiKey(apiValue));
 
             Log.d(TAG, "process: " + email + "" + apiKey);
         }catch(JSONException e){

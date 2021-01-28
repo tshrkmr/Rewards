@@ -17,7 +17,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 
 public class RewardsAPIRunnable implements Runnable{
 
-    private RewardActivity rewardActivity;
+    private final RewardActivity rewardActivity;
     private final String apiValue, receiverUser, giverUser, giverName, amount, note;
     private static final String TAG = "RewardsAPIRunnable";
 
@@ -62,7 +62,9 @@ public class RewardsAPIRunnable implements Runnable{
             Log.d(TAG, "run: response code " + responseCode);
             StringBuilder result = new StringBuilder();
 
+            boolean error;
             if (responseCode == HTTP_OK || responseCode == HTTP_CREATED) {
+                error = false;
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
                 String line;
@@ -70,6 +72,7 @@ public class RewardsAPIRunnable implements Runnable{
                     result.append(line).append("\n");
                 }
             } else {
+                error = true;
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
 
                 String line;
@@ -78,7 +81,7 @@ public class RewardsAPIRunnable implements Runnable{
                 }
             }
             Log.d(TAG, "run: reward result " + result.toString());
-            process(result.toString());
+            process(result.toString(), error);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -95,11 +98,22 @@ public class RewardsAPIRunnable implements Runnable{
         }
     }
 
-    private void process(String s){
+    private void process(String s, boolean error){
+        if (error) {
+            rewardActivity.runOnUiThread(()->rewardActivity.showError(s));
+            return;
+        }
         try {
+            String amount = "no value returned";
+            JSONObject jsonObject = new JSONObject(s);
+            if(jsonObject.has("amount"))
+                amount = jsonObject.getString("amount");
+            rewardActivity.updateGiverPointsLeft(amount);
             rewardActivity.runOnUiThread(()->rewardActivity.updateLeaderboardActivity());
 
             //Log.d(TAG, "process: " + rFirstName + "" + rLastName);
+        }catch(JSONException e){
+            e.printStackTrace();
         }catch (NullPointerException e){
             return;
         }

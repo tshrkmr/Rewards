@@ -7,6 +7,20 @@
     tools:context=".MainActivity">
 
     <ImageView
+        android:id="@+id/mainBackgroundmageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="150dp"
+        android:alpha=".15"
+        android:contentDescription="@string/profile_picture"
+        android:scaleType="fitEnd"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/login_people" />
+
+    <ImageView
         android:id="@+id/mainLogoImageView"
         android:layout_width="113dp"
         android:layout_height="92dp"
@@ -117,6 +131,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
+        android:onClick="clearSavedApi"
         android:text="@string/tap_to_clear_saved_api"
         android:textAlignment="center"
         android:textColor="@color/darkTextOrange"
@@ -125,5 +140,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/mainCreateProfileTextView"
         app:layout_constraintStart_toStartOf="@+id/mainCreateProfileTextView" />
+
+    <ProgressBar
+        android:id="@+id/mainProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:indeterminate="false"
+        android:indeterminateTint="#FF6D00"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
