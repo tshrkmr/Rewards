@@ -12,82 +12,68 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:textAlignment="viewStart"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/rewardImageView"
-        android:layout_width="141dp"
-        android:layout_height="175dp"
+        android:layout_width="0dp"
+        android:layout_height="220dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/rewardsimage"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/rewardNameTextview"
         app:layout_constraintTop_toBottomOf="@+id/rewardNameTextview"
         tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/rewardPointsAwardedTitleTextview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/rewardImageView"
-        app:layout_constraintTop_toTopOf="@+id/rewardImageView" />
 
     <TextView
         android:id="@+id/rewardPointsAwardedTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/rewardPointsAwardedTitleTextview"
-        app:layout_constraintStart_toStartOf="@+id/rewardPointsAwardedTitleTextview"
-        app:layout_constraintTop_toBottomOf="@+id/rewardPointsAwardedTitleTextview" />
-
-    <TextView
-        android:id="@+id/rewardDepartmentTitleTextview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/rewardPointsAwardedTextview"
-        app:layout_constraintStart_toStartOf="@+id/rewardPointsAwardedTextview"
-        app:layout_constraintTop_toBottomOf="@+id/rewardPointsAwardedTextview" />
+        android:textAlignment="viewStart"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <TextView
         android:id="@+id/rewardDepartmentTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/rewardDepartmentTitleTextview"
-        app:layout_constraintStart_toStartOf="@+id/rewardDepartmentTitleTextview"
-        app:layout_constraintTop_toBottomOf="@+id/rewardDepartmentTitleTextview" />
-
-    <TextView
-        android:id="@+id/rewardPositionTitleTextview"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="@+id/rewardDepartmentTextview"
-        app:layout_constraintStart_toStartOf="@+id/rewardDepartmentTextview"
-        app:layout_constraintTop_toBottomOf="@+id/rewardDepartmentTextview" />
+        android:textAlignment="viewStart"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/rewardPositionTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/rewardPositionTitleTextview"
-        app:layout_constraintStart_toStartOf="@+id/rewardPositionTitleTextview"
-        app:layout_constraintTop_toBottomOf="@+id/rewardPositionTitleTextview" />
+        android:textAlignment="viewStart"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/textView3"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/rewardStoryTitleTextview"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="@string/your_story"
-        app:layout_constraintEnd_toStartOf="@+id/rewardPositionTextview"
+        android:textAlignment="viewStart"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/rewardImageView"
         app:layout_constraintTop_toBottomOf="@+id/rewardPositionTextview" />
 
@@ -95,7 +81,7 @@
         android:id="@+id/rewardStoryTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/rewardPositionTextview"
         app:layout_constraintStart_toStartOf="@+id/rewardStoryTitleTextview"
         app:layout_constraintTop_toBottomOf="@+id/rewardStoryTitleTextview" />
@@ -104,8 +90,9 @@
         android:id="@+id/rewardPointsToSendTitleTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:text="@string/reward_points_to_send"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/rewardStoryTextview"
         app:layout_constraintTop_toBottomOf="@+id/rewardStoryTextview" />
@@ -114,7 +101,9 @@
         android:id="@+id/rewardCommentTitleTextview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/comment"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/rewardPointsToSendTitleTextview"
         app:layout_constraintStart_toStartOf="@+id/rewardPointsToSendTitleTextview"
         app:layout_constraintTop_toBottomOf="@+id/rewardPointsToSendEditText" />
@@ -124,8 +113,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:background="@color/grey"
         android:ems="10"
         android:inputType="number"
+        android:maxLength="11"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="@+id/rewardStoryTextview"
         app:layout_constraintStart_toEndOf="@+id/rewardPointsToSendTitleTextview"
         app:layout_constraintTop_toTopOf="@+id/rewardPointsToSendTitleTextview" />
@@ -135,9 +127,12 @@
         android:layout_width="0dp"
         android:layout_height="185dp"
         android:layout_marginTop="16dp"
+        android:background="@color/grey"
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
+        android:maxLength="80"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/rewardPointsToSendEditText"
         app:layout_constraintStart_toStartOf="@+id/rewardCommentTitleTextview"
         app:layout_constraintTop_toBottomOf="@+id/rewardCommentTitleTextview" />
@@ -147,5 +142,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent=".45" />
+        app:layout_constraintGuide_percent="0.49" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/points_awarded"
+        android:textAlignment="viewStart"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="@+id/rewardImageView" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/department"
+        android:textAlignment="viewStart"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/rewardPointsAwardedTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardPointsAwardedTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardPointsAwardedTextview" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/position"
+        android:textAlignment="viewStart"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/rewardDepartmentTextview"
+        app:layout_constraintStart_toStartOf="@+id/rewardDepartmentTextview"
+        app:layout_constraintTop_toBottomOf="@+id/rewardDepartmentTextview" />
 </androidx.constraintlayout.widget.ConstraintLayout>

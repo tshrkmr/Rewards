@@ -10,27 +10,23 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class LoginAPIRunnable implements Runnable{
-
+public class RewardDownloaderRunnable implements Runnable{
     private String apiValue, userName, password;
-    private MainActivity mainActivity;
+    private ProfileActivity profileActivity;
     private static final String TAG = "LoginAPIRunnable";
-    private  List<Reward> rewardList= new ArrayList<>();
 
-    public LoginAPIRunnable(String apiValue, String userName, String password, MainActivity mainActivity) {
+    public RewardDownloaderRunnable(ProfileActivity profileActivity, String apiValue, String userName, String password) {
         this.apiValue = apiValue;
         this.userName = userName;
         this.password = password;
-        this.mainActivity = mainActivity;
+        this.profileActivity = profileActivity;
     }
 
     @Override
@@ -77,7 +73,7 @@ public class LoginAPIRunnable implements Runnable{
                     result.append(line).append("\n");
                 }
             }
-            Log.d(TAG, "run: result " + result.toString());
+            Log.d(TAG, "run: result rewardDownload  " + result.toString());
             process(result.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,24 +93,26 @@ public class LoginAPIRunnable implements Runnable{
 
     private void process(String s){
         try {
+            profileActivity.clearRewardList();
             JSONObject jsonObject = new JSONObject(s);
-            String rFirstName = jsonObject.getString("firstName");
-            String rLastName = jsonObject.getString("lastName");
-            String rUserName = jsonObject.getString("userName");
-            String rDepartment = jsonObject.getString("department");
-            String rStory = jsonObject.getString("story");
-            String rPosition = jsonObject.getString("position");
-            String rPassword = jsonObject.getString("password");
-            String rRemainingPointsToReward = jsonObject.getString("remainingPointsToAward");
-            String rLocation = jsonObject.getString("location");
-            String rImageBytes = jsonObject.getString("imageBytes");
 
-            Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rImageBytes);
-            employee.setPassword(rPassword);
-            employee.setRemainingPointsToAward(rRemainingPointsToReward);
-            employee.setLocation(rLocation);
-            mainActivity.runOnUiThread(()->mainActivity.setEmployeeDetails(employee));
+            JSONArray jsonArray = jsonObject.getJSONArray("rewardRecordViews");
 
+            int length =jsonArray.length();
+            int pointsAwarded = 0;
+            for(int i =0; i<length; i++) {
+                JSONObject details = jsonArray.getJSONObject(i);
+                String rGiverName = details.getString("giverName");
+                String rAmount = details.getString("amount");
+                String rNote = details.getString("note");
+                String rAwardDate= details.getString("awardDate");
+                Reward reward = new Reward(rGiverName, rAmount, rNote, rAwardDate);
+                pointsAwarded += Integer.parseInt(rAmount);
+
+                profileActivity.runOnUiThread(()->profileActivity.updateRecyclerView(reward));
+            }
+            int finalPointsAwarded = pointsAwarded;
+            profileActivity.runOnUiThread(()->profileActivity.setPointsAwarded(finalPointsAwarded));
             //Log.d(TAG, "process: " + rFirstName + "" + rLastName);
         }catch(JSONException e){
             e.printStackTrace();

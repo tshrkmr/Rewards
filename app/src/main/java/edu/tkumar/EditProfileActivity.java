@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,7 +24,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Objects;
@@ -122,7 +122,7 @@ public class EditProfileActivity extends AppCompatActivity {
             apiValue = intent.getStringExtra("apiValue");
             Log.d(TAG, "getIntentData: " + apiValue);
         }
-        employee = (Employee) intent.getSerializableExtra("employee");
+        employee = (Employee) intent.getSerializableExtra("employeeLoggedIn");
     }
 
     public void GalleryOrCamera(View v){
@@ -193,8 +193,6 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        selectedImage.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream);
         imageButton.setImageBitmap(selectedImage);
         imageToBase64();
     }
@@ -218,16 +216,29 @@ public class EditProfileActivity extends AppCompatActivity {
                     || departmentName.trim().isEmpty() || position.trim().isEmpty() || story.trim().isEmpty()){
                 profileDataIncorrect(empty);
             }else {
-                UpdateProfileAPIRunnable updateProfileAPIRunnable = new UpdateProfileAPIRunnable(this, firstName, lastName,
-                        userName, departmentName, story, position, password, "Chicago", imageBytes, apiValue);
-                new Thread(updateProfileAPIRunnable).start();
-
-//                CreateProfileAPIRunnable createProfileAPIRunnable = new CreateProfileAPIRunnable(this, firstName,
-//                        lastName, userName, departmentName, story, positionTitle, password,"1000", locationValue, imageBytes, apiValue);
-//                new Thread(createProfileAPIRunnable).start();
+                saveChangesDialog();
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveChangesDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Save Changes?");
+        builder.setPositiveButton("OK", (dialog, which) -> updateProfile());
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void updateProfile(){
+        UpdateProfileAPIRunnable updateProfileAPIRunnable = new UpdateProfileAPIRunnable(this, firstName, lastName,
+                userName, departmentName, story, position, password, "Chicago", imageBytes, apiValue);
+        new Thread(updateProfileAPIRunnable).start();
     }
 
     private void getFieldData(){

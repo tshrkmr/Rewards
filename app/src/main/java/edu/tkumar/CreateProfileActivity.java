@@ -3,8 +3,13 @@ package edu.tkumar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -32,7 +37,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     private EditText createStory, createUsername, createPassword, createFirstName, createLastName, createDepartmentName, createPositionTitle;
     private String story, userName, password, firstName, lastName, departmentName, positionTitle;
     private ProgressBar progressBar;
-    private final String empty = "empty", noImage = "noImage";
+    private final String empty = "empty", noImage = "noImage", noPermission = "noPermission";
     private TextView textSizeDisplay;
     private ImageButton imageButton;
     private static final int MAX_LEN = 360;
@@ -40,7 +45,10 @@ public class CreateProfileActivity extends AppCompatActivity {
     private final int REQUEST_IMAGE_GALLERY = 1;
     private String locationValue = "", apiValue = "";
     private String imageBytes = "";
+    private static final int READ_STORAGE_REQUEST = 112;
     private static final String TAG = "CreateProfileActivity";
+    private View view;
+
 
     //Temporary
     private EditText deleteProfile;
@@ -83,8 +91,6 @@ public class CreateProfileActivity extends AppCompatActivity {
         imageButton = findViewById(R.id.createProfileImageButton);
         createStory = findViewById(R.id.createStoryEditText);
         textSizeDisplay = findViewById(R.id.createStoryTitleTextview);
-        //deleteProfile = findViewById(R.id.deleteprofileEditText);
-        //progressBar = findViewById(R.id.createProgressBar);
         //progressBar.setVisibility(View.GONE);
     }
 
@@ -119,16 +125,51 @@ public class CreateProfileActivity extends AppCompatActivity {
     }
 
     public void GalleryOrCamera(View v){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Profile Picture");
-        builder.setMessage("Take picture from:");
-        builder.setPositiveButton("CAMERA", (dialog, which) -> doThumb(v));
-        builder.setNegativeButton("GALLERY", (dialog, which) -> doGallery(v));
-        builder.setNeutralButton("CANCEL", (dialog, which) -> {
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        if(checkPermission()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Profile Picture");
+            builder.setMessage("Take picture from:");
+            builder.setPositiveButton("CAMERA", (dialog, which) -> doThumb(v));
+            builder.setNegativeButton("GALLERY", (dialog, which) -> doGallery(v));
+            builder.setNeutralButton("CANCEL", (dialog, which) -> {
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
+
+    private boolean checkPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    }, READ_STORAGE_REQUEST);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == READ_STORAGE_REQUEST) {
+            if (permissions[0].equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    imageButton.performClick();
+                } else {
+                    profileDataIncorrect(noPermission);
+                }
+            }
+        }
+    }
+
 
     public void doGallery(View v) {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -201,14 +242,31 @@ public class CreateProfileActivity extends AppCompatActivity {
                     || departmentName.trim().isEmpty() || positionTitle.trim().isEmpty() || story.trim().isEmpty()){
                 profileDataIncorrect(empty);
             }else {
-
-                CreateProfileAPIRunnable createProfileAPIRunnable = new CreateProfileAPIRunnable(this, firstName,
-                        lastName, userName, departmentName, story, positionTitle, password,"1000", locationValue, imageBytes, apiValue);
-                new Thread(createProfileAPIRunnable).start();
+                saveChangesDialog();
                 //progressBar.setVisibility(View.VISIBLE);
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveChangesDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Save Changes?");
+        builder.setPositiveButton("OK", (dialog, which) -> createProfile());
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void createProfile(){
+        CreateProfileAPIRunnable createProfileAPIRunnable = new CreateProfileAPIRunnable(this, firstName,
+                lastName, userName, departmentName, story, positionTitle, password,"1000", locationValue, imageBytes, apiValue);
+        new Thread(createProfileAPIRunnable).start();
     }
 
     private void getFieldData(){
@@ -231,25 +289,19 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     private void profileDataIncorrect(String issue){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("One or More Fields Incorrect");
         if(issue.equals(empty)) {
-            builder.setTitle("One or More Fields not Entered");
             builder.setMessage("Please enter data in all the fields");
-        }
-        else if(issue.equals(noImage)) {
-            builder.setTitle("One or More Fields Incorrect");
+        } else if(issue.equals(noImage)) {
             builder.setMessage("Please select an image");
+        }else if(issue.equals(noPermission)){
+            builder.setMessage("Please grant permission in Settings");
         }
         builder.setPositiveButton("OK", (dialog, which) -> {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-//    public void temporaryDelete(View v){
-//        tempProfile = deleteProfile.getText().toString();
-//        DeleteProfileAPIRunnable deleteProfileAPIRunnable = new DeleteProfileAPIRunnable(tempProfile, apiValue);
-//        new Thread(deleteProfileAPIRunnable).start();
-//    }
 
     public void profileCreated(Employee employee){
         //progressBar.setVisibility(View.GONE );
@@ -264,5 +316,25 @@ public class CreateProfileActivity extends AppCompatActivity {
         getSupportActionBar().setLogo(R.drawable.icon);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setTitle("Create Profile");
+    }
+
+    public void showError(String s){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Creation Failed");
+        builder.setMessage(s);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

@@ -41,6 +41,6 @@ public class RewardAdapter extends RecyclerView.Adapter<RewardViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return rewardList.size();
     }
 }

@@ -3,34 +3,32 @@ package edu.tkumar;
 import android.net.Uri;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.net.HttpURLConnection.HTTP_CREATED;
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class LoginAPIRunnable implements Runnable{
+public class RewardsAPIRunnable implements Runnable{
 
-    private String apiValue, userName, password;
-    private MainActivity mainActivity;
-    private static final String TAG = "LoginAPIRunnable";
-    private  List<Reward> rewardList= new ArrayList<>();
+    private RewardActivity rewardActivity;
+    private final String apiValue, receiverUser, giverUser, giverName, amount, note;
+    private static final String TAG = "RewardsAPIRunnable";
 
-    public LoginAPIRunnable(String apiValue, String userName, String password, MainActivity mainActivity) {
+    public RewardsAPIRunnable(RewardActivity rewardActivity, String apiValue, String receiverUser, String giverUser, String giverName, String amount, String note) {
+        this.rewardActivity = rewardActivity;
         this.apiValue = apiValue;
-        this.userName = userName;
-        this.password = password;
-        this.mainActivity = mainActivity;
+        this.receiverUser = receiverUser;
+        this.giverUser = giverUser;
+        this.giverName = giverName;
+        this.amount = amount;
+        this.note = note;
     }
 
     @Override
@@ -39,27 +37,29 @@ public class LoginAPIRunnable implements Runnable{
         BufferedReader reader = null;
 
         try {
-            String urlString = "http://christopherhield.org/api/Profile/Login";
+            String urlString = "http://christopherhield.org/api/Rewards/AddRewardRecord";
 
             Uri.Builder buildURL = Uri.parse(urlString).buildUpon();
-            buildURL.appendQueryParameter("userName", userName);
-            buildURL.appendQueryParameter("password", password);
+            buildURL.appendQueryParameter("receiverUser", receiverUser);
+            buildURL.appendQueryParameter("giverUser", giverUser);
+            buildURL.appendQueryParameter("giverName", giverName);
+            buildURL.appendQueryParameter("amount", amount);
+            buildURL.appendQueryParameter("note", note);
 
             String urlToUse = buildURL.build().toString();
             URL url = new URL(urlToUse);
 
-            Log.d(TAG, "run: " + urlToUse + userName + password);
+            Log.d(TAG, "run: " + urlToUse);
 
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("ApiKey", apiValue);
             connection.connect();
 
-
             int responseCode = connection.getResponseCode();
-            Log.d(TAG, "run: response code" + responseCode);
+            Log.d(TAG, "run: response code " + responseCode);
             StringBuilder result = new StringBuilder();
 
             if (responseCode == HTTP_OK || responseCode == HTTP_CREATED) {
@@ -77,7 +77,7 @@ public class LoginAPIRunnable implements Runnable{
                     result.append(line).append("\n");
                 }
             }
-            Log.d(TAG, "run: result " + result.toString());
+            Log.d(TAG, "run: reward result " + result.toString());
             process(result.toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,22 +98,13 @@ public class LoginAPIRunnable implements Runnable{
     private void process(String s){
         try {
             JSONObject jsonObject = new JSONObject(s);
-            String rFirstName = jsonObject.getString("firstName");
-            String rLastName = jsonObject.getString("lastName");
-            String rUserName = jsonObject.getString("userName");
-            String rDepartment = jsonObject.getString("department");
-            String rStory = jsonObject.getString("story");
-            String rPosition = jsonObject.getString("position");
-            String rPassword = jsonObject.getString("password");
-            String rRemainingPointsToReward = jsonObject.getString("remainingPointsToAward");
-            String rLocation = jsonObject.getString("location");
-            String rImageBytes = jsonObject.getString("imageBytes");
+            String rReceiverUser = jsonObject.getString("receiverUser");
+            String rGiverUser = jsonObject.getString("GiverUser");
+            String rGiverName = jsonObject.getString("giverName");
+            String rAmount = jsonObject.getString("amount");
+            String rNote = jsonObject.getString("note");
 
-            Employee employee = new Employee(rFirstName, rLastName, rUserName, rDepartment, rStory, rPosition, rImageBytes);
-            employee.setPassword(rPassword);
-            employee.setRemainingPointsToAward(rRemainingPointsToReward);
-            employee.setLocation(rLocation);
-            mainActivity.runOnUiThread(()->mainActivity.setEmployeeDetails(employee));
+            rewardActivity.runOnUiThread(()->rewardActivity.updateLeaderboardActivity());
 
             //Log.d(TAG, "process: " + rFirstName + "" + rLastName);
         }catch(JSONException e){

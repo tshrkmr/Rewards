@@ -1,46 +1,48 @@
 package edu.tkumar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private SharedPreferences sharedPreferences;
     private EditText firstName, lastName, emailID, studentID, mainUserName, mainPassword;
-    private String fName, lName, eID, sID, location, userName, password;
-    private LocationManager locationManager;
-    private Criteria criteria;
-    private static final int MY_LOCATION_REQUEST_CODE_ID = 111;
-    private Location currentLocation = null;
+    private String fName, lName, eID, sID, userName, password;
     private final String apiValueNull = "apiValueNull", empty = "empty", incorrectEmail = "incorrectEmail", nullValue = "nullValue";
+    private FusedLocationProviderClient mFusedLocationClient;
+    private static final int LOCATION_REQUEST = 111;
+    private CheckBox checkBox;
+
+    private static String locationString = "Unspecified Location";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,77 +52,105 @@ public class MainActivity extends AppCompatActivity {
         checkSharedPreferences();
         initializeFields();
         findLocation();
+        enterSavedDetails();
+    }
+
+    private void enterSavedDetails(){
+        sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+        String myUserName = sharedPreferences.getString("loginUserName", "noUserName");
+        String myPassword = sharedPreferences.getString("loginPassword", "noPassword");
+        if(myUserName.equals("noUserName"))
+            mainUserName.setText("");
+        else mainUserName.setText(myUserName);
+        if(myPassword.equals("noPassword"))
+            mainPassword.setText("");
+        else mainPassword.setText(myPassword);
     }
 
     private void initializeFields(){
         mainUserName = findViewById(R.id.mainUsernameEditText);
         mainPassword = findViewById(R.id.mainPasswordEditText);
+        checkBox = findViewById(R.id.mainRememberCredentialsCheckbox);
     }
 
     private void findLocation(){
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mFusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(this);
 
-        criteria = new Criteria();
+        determineLocation();
+    }
 
-        // use gps for location
-        criteria.setPowerRequirement(Criteria.POWER_HIGH);
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+    private void determineLocation() {
+        if (checkPermission()) {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            locationString = getPlace(location);
+                            Log.d(TAG, "determineLocation: " + locationString);
+                        }
+                    })
+                    .addOnFailureListener(this, e -> Toast.makeText(MainActivity.this,
+                            e.getMessage(), Toast.LENGTH_LONG).show());
+        }
+    }
 
-        // use network for location
-        //criteria.setPowerRequirement(Criteria.POWER_LOW);
-        //criteria.setAccuracy(Criteria.ACCURACY_MEDIUM);
+    private boolean checkPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
 
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setSpeedRequired(false);
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
+            ActivityCompat.requestPermissions(this,
                     new String[]{
                             Manifest.permission.ACCESS_FINE_LOCATION
-                    },
-                    MY_LOCATION_REQUEST_CODE_ID);
-        } else {
-            setLocation();
+                    }, LOCATION_REQUEST);
+            return false;
         }
+        return true;
     }
 
-    @SuppressLint("MissingPermission")
-    private void setLocation() {
+    private String getPlace(Location loc) {
 
-        String bestProvider = locationManager.getBestProvider(criteria, true);
-
-        if (bestProvider != null) {
-            currentLocation = locationManager.getLastKnownLocation(bestProvider);
-        }
-        if (currentLocation != null) {
-            findCitySate(currentLocation.getLatitude(), currentLocation.getLongitude());
-            Log.d(TAG, "setLocation: " + currentLocation.getLatitude() + " " + currentLocation.getLongitude());
-        } else {
-            Log.d(TAG, "setLocation: " + "No Location");
-        }
-    }
-
-    public void findCitySate(double latitude, double longitude){
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+
         try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            addresses = geocoder.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
             String city = addresses.get(0).getLocality();
             String state = addresses.get(0).getAdminArea();
-            location = city.concat(", ").concat(state);
-            //Log.d(TAG, "findPostalCode: " + postalCode + "  " + city);
-            Toast.makeText(MainActivity.this, location ,Toast.LENGTH_LONG ).show();
+            return city + ", " + state;
 
-        }catch (IOException e){
-            Log.d(TAG, "findPostalCode: " + " address not found");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == LOCATION_REQUEST) {
+            if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    determineLocation();
+                } else {
+                    //textView.setText(R.string.deniedText);
+                }
+            }
         }
     }
 
     private void checkSharedPreferences(){
+        //setContentView(R.layout.activity_main);
         sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
         String myAPI = sharedPreferences.getString("apiValue", "noAPI");
+        String checked = sharedPreferences.getString("checked", "false");
+//        if(checked.equals("true"))
+//            checkBox.setChecked(true);
         if(myAPI.equals("noAPI")) {
             createApiNeededDialog();
         }
@@ -149,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
                 eID = emailID.getText().toString();
                 sID = studentID.getText().toString();
                 if(fName.trim().isEmpty() || lName.trim().isEmpty() || eID.trim().isEmpty() || sID.trim().isEmpty()){
-                    apiDataIncorrect(empty);
+                    showError(empty);
                 }else if(!eID.trim().matches(emailPattern)){
-                    apiDataIncorrect(incorrectEmail);
+                    showError(incorrectEmail);
                 }else{
                     getApiKey(fName, lName, eID, sID);
                 }
@@ -167,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void apiDataIncorrect(String issue){
+    private void showError(String issue){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         switch (issue) {
             case empty:
@@ -205,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
             prefsEditor.apply();
             createApiStoredDialog(api);
         }else {
-            apiDataIncorrect(apiValueNull);
+            showError(apiValueNull);
         }
 
     }
@@ -248,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Intent intent = new Intent(this, CreateProfileActivity.class);
-        intent.putExtra("location", "Chicago");
+        intent.putExtra("location", locationString);
         intent.putExtra("apiValue", myAPI);
         startActivity(intent);
     }
@@ -262,17 +292,35 @@ public class MainActivity extends AppCompatActivity {
         userName = mainUserName.getText().toString();
         password = mainPassword.getText().toString();
         if(userName.trim().isEmpty() || password.trim().isEmpty()){
+            showError(empty);
             return;
         }
+//        Intent intent = new Intent(this, ProfileActivity.class);
+//        intent.putExtra("apiValue", myAPI);
+//        startActivity(intent);
         LoginAPIRunnable loginAPIRunnable = new LoginAPIRunnable(myAPI, userName, password, this);
         new Thread(loginAPIRunnable).start();
     }
 
     public void setEmployeeDetails(Employee employee){
+        if(checkBox.isChecked()){
+            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+            prefsEditor.putString("loginUserName", employee.getUsername());
+            prefsEditor.putString("loginPassword", employee.getPassword());
+            prefsEditor.putString("checked", "true");
+            prefsEditor.apply();
+        }else if(!checkBox.isChecked()){
+            SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
+            prefsEditor.remove("loginUserName");
+            prefsEditor.remove("loginPassword");
+            prefsEditor.putString("checked", "false");
+            prefsEditor.apply();
+        }
         String myAPI = sharedPreferences.getString("apiValue", "noAPI");
         Intent intent = new Intent(this, ProfileActivity.class);
-        intent.putExtra("employee", employee);
+        intent.putExtra("employeeLoggedIn", employee);
         intent.putExtra("apiValue", myAPI);
         startActivity(intent);
     }
+
 }

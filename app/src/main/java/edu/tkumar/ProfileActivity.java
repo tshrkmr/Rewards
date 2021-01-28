@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -24,9 +23,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private RewardAdapter rewardAdapter;
     private RecyclerView recyclerView;
-    private final List<Reward> rewardList= new ArrayList<>();
-    private List<Employee> employeeList = new ArrayList<>();
-    private Employee employee;
+    private List<Reward> rewardList= new ArrayList<>();
+    private Employee employeeLoggedIn;
     private TextView profileName, profileLocation, profilePointsAwarded, profileDepartment, profilePosition, profilePointsToAward, profileStory, profileRewardHistoryTitleTextview;
     private ImageView profileImageView;
     private Bitmap bitmap;
@@ -41,6 +39,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         getIntentData();
 
+        setUpProfileRecyclerview();
+
         convertTextToImage();
 
         initializeFields();
@@ -51,7 +51,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         setUpActionBar();
 
-        setUpProfileRecyclerview();
+        downloadRewardData();
     }
 
     private void getIntentData(){
@@ -62,7 +62,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             Log.d(TAG, "getIntentData: " + apiValue);
         }
 
-        employee = (Employee) intent.getSerializableExtra("employee");
+        employeeLoggedIn = (Employee) intent.getSerializableExtra("employeeLoggedIn");
+    }
+
+    private void downloadRewardData(){
+        RewardDownloaderRunnable rewardDownloaderRunnable = new RewardDownloaderRunnable(this, apiValue, employeeLoggedIn.getUsername(), employeeLoggedIn.getPassword());
+        new Thread(rewardDownloaderRunnable).start();
     }
 
     private void initializeFields(){
@@ -78,13 +83,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void enterFieldData(){
-        profileName.setText(String.format("%s %s  (%s)", employee.getFirstName(), employee.getLastName(), employee.getUsername()));
-        profileLocation.setText(employee.getLocation());
-        //profilePointsAwarded.setText();
-        profileDepartment.setText(employee.getDepartment());
-        profilePosition.setText(employee.getPosition());
-        profilePointsToAward.setText(employee.getRemainingPointsToAward());
-        profileStory.setText(employee.getStory());
+        profileName.setText(String.format("%s %s  (%s)", employeeLoggedIn.getFirstName(), employeeLoggedIn.getLastName(), employeeLoggedIn.getUsername()));
+        profileLocation.setText(employeeLoggedIn.getLocation());
+        profileDepartment.setText(employeeLoggedIn.getDepartment());
+        profilePosition.setText(employeeLoggedIn.getPosition());
+        profilePointsToAward.setText(employeeLoggedIn.getRemainingPointsToAward());
+        profileStory.setText(employeeLoggedIn.getStory());
         profileImageView.setImageBitmap(bitmap);
     }
     private void setUpProfileRecyclerview(){
@@ -92,11 +96,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         rewardAdapter = new RewardAdapter(rewardList, this);
         recyclerView.setAdapter(rewardAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        rewardAdapter.notifyDataSetChanged();
     }
 
     private void convertTextToImage(){
-        TextToImage textToImage = new TextToImage(employee.getImageBytes());
+        TextToImage textToImage = new TextToImage(employeeLoggedIn.getImageBytes());
         bitmap = textToImage.textToImage();
     }
 
@@ -119,32 +122,40 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             openEditActivity();
         }else if(itemID == R.id.show_leaderboard_menu) {
             setLeaderboardData();
-//            GetAllProfilesAPIRunnable getAllProfilesAPIRunnable = new GetAllProfilesAPIRunnable(this, apiValue);
-//            new Thread(getAllProfilesAPIRunnable).start();
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void openEditActivity(){
         Intent intent = new Intent(this, EditProfileActivity.class);
-        intent.putExtra("employee", employee);
+        intent.putExtra("employeeLoggedIn", employeeLoggedIn);
         intent.putExtra("apiValue", apiValue);
         startActivity(intent);
     }
 
     @Override
     public void onClick(View v) {
-
     }
 
     public void setLeaderboardData(){
         Intent intent = new Intent(this, LeaderboardActivity.class);
         intent.putExtra("apiValue", apiValue);
-        //intent.putStringArrayListExtra("employeeList", employeeList);
-//        intent.putExtra("employeeList", (ArrayList<Employee>) employeeList);
-//        intent.putExtra("apiValue", apiValue);
-        //intent.putCharSequenceArrayListExtra("employeeList", employeeList);
+        intent.putExtra("employeeLoggedIn", employeeLoggedIn);
         startActivity(intent);
+    }
+
+    public void updateRecyclerView(Reward reward){
+        rewardList.add(reward);
+        rewardAdapter.notifyDataSetChanged();
+    }
+
+    public void clearRewardList(){
+        rewardList.clear();
+    }
+
+    public void setPointsAwarded(int pointsAwarded){
+        String pA = Integer.toString(pointsAwarded);
+        profilePointsAwarded.setText(pA);
     }
 
     private void setUpActionBar(){

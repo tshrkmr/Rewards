@@ -18,6 +18,7 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
     private RecyclerView recyclerView;
     private List<Employee> employeeList = new ArrayList<>();
     private String apiValue;
+    private Employee employeeLoggedIn;
     private static final String TAG = "LeaderboardActivity";
 
     @Override
@@ -36,9 +37,14 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
 
         getIntentData();
 
+        setUpActionBar();
+
+        downloadData();
+    }
+
+    private void downloadData(){
         GetAllProfilesAPIRunnable getAllProfilesAPIRunnable = new GetAllProfilesAPIRunnable(this, apiValue);
         new Thread(getAllProfilesAPIRunnable).start();
-
     }
 
     private void getIntentData(){
@@ -48,6 +54,8 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
             apiValue = intent.getStringExtra("apiValue");
             Log.d(TAG, "getIntentData: " + apiValue);
         }
+
+        employeeLoggedIn = (Employee) intent.getSerializableExtra("employeeLoggedIn");
 
     }
 
@@ -70,7 +78,12 @@ public class LeaderboardActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-
+        int position = recyclerView.getChildAdapterPosition(v);
+        Intent intent = new Intent(this, RewardActivity.class);
+        intent.putExtra("employeeSelected", employeeList.get(position));
+        intent.putExtra("employeeLoggedIn", employeeLoggedIn);
+        intent.putExtra("apiValue", apiValue);
+        startActivity(intent);
     }
 
     private void setUpActionBar(){
